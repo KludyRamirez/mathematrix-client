@@ -6,6 +6,7 @@ import {
   BsBookmarkStar,
   BsClockHistory,
   BsController,
+  BsMegaphoneFill,
   BsTrophy,
 } from "react-icons/bs";
 import controller from "../assets/images/controller.png";
@@ -14,6 +15,7 @@ import trophy from "../assets/images/trophy.png";
 import clock from "../assets/images/clock.png";
 import { Link } from "react-router-dom";
 import { ImBell } from "react-icons/im";
+import logo from "../assets/images/logo.png";
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -54,18 +56,31 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="w-full h-screen bg-gradient-to-b from-blue-100 to-blue-50 text-gray-800 flex items-center justify-center">
-        <div className="w-[80%] flex flex-col items-center justify-center gap-20">
-          <div className="w-full flex justify-between items-center">
-            <span className="text-[48px] text-gray-800 font-[vip-bold]">
-              Mathematrix
-            </span>
-            <div className="flex justify-end items-center">
-              <ImBell size={48} />
-              <div className=""></div>
+      <div className="w-full h-screen bg-gradient-to-b from-blue-100 to-blue-50 text-gray-800 flex items-start justify-center">
+        <div className="w-[80%] flex flex-col items-center justify-center">
+          <div className="w-full flex justify-between items-center py-20">
+            <div className="flex justify-center items-center gap-8">
+              <span className="text-[56px] font-bold text-6xl text-yellow-900 font-[mighty] tracking-wide">
+                Mathematrix
+              </span>
+            </div>
+            <div className="flex justify-end items-center gap-8">
+              <div className="w-[20px] h-[20px] bg-red-500 rounded-[50%]"></div>
+              <span className="text-[24px] font-[mighty] ">
+                Note:{" "}
+                <span className="font-[regular] text-red-500">
+                  Currently under construction. Thank you !
+                </span>
+              </span>
+              <span className="text-[24px] font-[mighty]">
+                Welcome, {user.username} !
+              </span>
+              <div className="flex justify-center items-center w-[60px] h-[60px] font-[mighty] text-white text-2xl rounded-[50%] bg-blue-500 shadow-2xl shadow-sky-500/50">
+                {user.username.slice(0, 1).toUpperCase()}
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-8">
+          <div className="flex flex-wrap justify-center items-start gap-8">
             <Link to="/singleplayer">
               <div className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500">
                 <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[250px] group-hover:text-blue-600 group-hover:rotate-[40deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
@@ -82,7 +97,9 @@ const HomePage = () => {
               </div>
             </Link>
             <div
-              className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500"
+              className={`${
+                active === "Leaderboards" ? "block" : "block"
+              } cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500`}
               onClick={() => setActive("Lectures")}
             >
               <div className="absolute -top-8 w-full left-16 text-white/10 text-[234px] group-hover:text-blue-600 group-hover:rotate-[12deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
@@ -99,7 +116,9 @@ const HomePage = () => {
             </div>
 
             <div
-              className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500"
+              className={`${
+                active === "Leaderboards" ? "block" : "block"
+              } cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500`}
               onClick={() => setActive("Leaderboards")}
             >
               <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
@@ -114,6 +133,19 @@ const HomePage = () => {
                 Boards
               </p>
             </div>
+
+            {/* <div
+              className={`${
+                active === "Leaderboards" ? "block" : "hidden"
+              } w-[646px] h-[606px] flex flex-col justify-end items-center`}
+            >
+              <div className="w-full flex flex-col justify-center items-center">
+                <div className="w-[200px] h-[130px] bg-blue-500"></div>
+                <div className="w-full h-[130px] bg-blue-500">
+                  <div className=""></div>
+                </div>
+              </div>
+            </div> */}
 
             <div
               className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500"
@@ -133,15 +165,15 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="w-full flex justify-start items-center ">
-            <div className="flex flex-col gap-4 items-start">
-              <Link to="/admin">
-                <div className="cursor-pointer text-[48px] text-gray-800 font-[vip-bold] hover:text-blue-600 skew-y-6 hover:skew-y-0">
+          <div className="w-full flex justify-start items-center py-20">
+            <div className="flex flex-col gap-8 items-start">
+              {/* <Link to="/admin">
+                <div className="cursor-pointer text-5xl text-gray-800 font-[vip-bold] hover:text-blue-600 skew-y-6 hover:skew-y-0">
                   Admin
                 </div>
-              </Link>
+              </Link> */}
               <div
-                className="flex gap-8 items-center cursor-pointer text-[48px] text-gray-800 font-[vip-bold] hover:text-red-600 skew-y-6 hover:skew-y-0"
+                className="flex gap-8 items-center cursor-pointer text-5xl text-gray-800 font-[vip-bold] hover:text-red-600 skew-y-6 hover:skew-y-0"
                 onClick={handleLogout}
               >
                 <span>Sign out</span>
@@ -249,13 +281,6 @@ const HomePage = () => {
             </div>
           )} */}
         </div>
-
-        {/* <div
-          className="cursor-pointer text-[64px] text-red-500 font-[semi-bold]"
-          onClick={handleLogout}
-        >
-          Log out
-        </div> */}
       </div>
     </>
   );

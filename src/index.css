@@ -62,8 +62,8 @@ body {
 }
 
 @font-face {
-  font-family: "raster";
-  src: url("./assets/fonts/Raster.ttf") format("truetype");
+  font-family: "mighty";
+  src: url("./assets/fonts/mighty.ttf") format("truetype");
 }
 
 .spacer-large {
