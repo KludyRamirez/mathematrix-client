@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: regular;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "extra-light";
+  src: url("./assets/fonts/PPMori-Extralight.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "extra-light-italic";
+  src: url("./assets/fonts/PPMori-ExtralightItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "regular";
+  src: url("./assets/fonts/PPMori-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "regular-italic";
+  src: url("./assets/fonts/PPMori-RegularItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "semi-bold";
+  src: url("./assets/fonts/PPMori-SemiBold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "semi-bold-italic";
+  src: url("./assets/fonts/PPMori-SemiBoldItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "vip-regular";
+  src: url("./assets/fonts/Vipnagorgialla-Rg.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "vip-regular-italic";
+  src: url("./assets/fonts/Vipnagorgialla-Rg-It.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "vip-bold";
+  src: url("./assets/fonts/Vipnagorgialla-Bd.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "vip-bold-italic";
+  src: url("./assets/fonts/Vipnagorgialla-Bd-It.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "raster";
+  src: url("./assets/fonts/Raster.ttf") format("truetype");
+}
+
+.spacer-large {
+  padding: 60px 0px;
+}
+
+.spacer-medium {
+  padding: 20px 0px;
+}
+
+.spacer-small {
+  padding: 8px 0px;
+}
+
+.spacer-xs {
+  padding: 4px 0px;
+}
+
+.footer-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1f51ff;
+  color: white;
+  text-decoration: none;
+  border: none;
+  transition: all 300ms;
+}
+
+.footer-btn:hover {
+  background-color: #282828;
+  color: #fff;
+}
+
+.footer-btn::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: all 500ms;
+}
+
+.footer-btn:hover::after {
+  transform: scale(1, 1);
+  opacity: 1;
+}
+
+.footer-btn:active {
+  transform: scale(0.9);
+}
