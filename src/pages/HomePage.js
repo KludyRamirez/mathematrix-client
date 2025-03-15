@@ -117,7 +117,7 @@ const HomePage = () => {
 
             <div
               className={`${
-                active === "Leaderboards" ? "block" : "block"
+                active === "Leaderboards" ? "hidden" : "block"
               } cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500`}
               onClick={() => setActive("Leaderboards")}
             >
@@ -134,7 +134,7 @@ const HomePage = () => {
               </p>
             </div>
 
-            {/* <div
+            <div
               className={`${
                 active === "Leaderboards" ? "block" : "hidden"
               } w-[646px] h-[606px] flex flex-col justify-end items-center`}
@@ -145,7 +145,7 @@ const HomePage = () => {
                   <div className=""></div>
                 </div>
               </div>
-            </div> */}
+            </div>
 
             <div
               className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500"
