@@ -120,6 +120,8 @@ const Questions = () => {
       const { question, category, options, correctAnswer } = formValues;
       dispatch(addQuestion(question, category, options, correctAnswer));
     }
+
+    handleClose();
   };
 
   // add question dialog
@@ -129,6 +131,13 @@ const Questions = () => {
 
   const handleClose = () => {
     setOpen(false);
+    setErrors({});
+    setFormValues({
+      question: "",
+      category: "",
+      options: [],
+      correctAnswer: "",
+    });
   };
 
   return (
@@ -145,7 +154,7 @@ const Questions = () => {
             <div className="w-full flex flex-col">
               <div className="w-full flex justify-between items-center border-b-[2px] border-white">
                 <div className="w-[calc(100%-108px)] font-[extra-light] px-4 pt-4 pb-2">
-                  Filters
+                  Table
                 </div>
                 <div className="w-[100px] h-[50px] bg-white flex justify-end items-center">
                   <button
@@ -156,45 +165,56 @@ const Questions = () => {
                   </button>
                 </div>
               </div>
-              <div className="w-full flex justify-start items center gap-8">
+              {/* <div className="w-full flex justify-start items center gap-8">
                 <div className="w-[190px] flex flex-col gap-3 p-4">
-                  {/* <div className="font-[extra-light]">Question</div>
+                  <div className="font-[extra-light]">Question</div>
                   <select className="w-full px-3 h-[40px] appearance-none focus:outline-none border-[1px] border-gray-300 focus:border-gray-400 rounded-[4px] font-[extra-light]">
                     <option>kludy</option>
-                  </select> */}
+                  </select>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Table */}
-            <div className="w-full h-[620px] bg-[#f9f9f9] rounded-tl-[12px] rounded-tr-[12px] overflow-auto">
-              <div className="w-full h-[60px] flex justify-start items-center bg-white">
-                {/* <div className="flex justify-start items-center px-6">
-                  <input type="checkbox" className="w-[18px] h-[18px]" />
-                </div> */}
-                <div className="w-[500px] flex justify-center items-center text-gray-900">
+
+            <div className="w-full h-[calc(100vh-200px)] overflow-auto">
+              <div className="w-[fit-content] h-[80px] pb-4 flex justify-start items-center bg-white pl-4">
+                <div className="w-[340px] h-full flex justify-start items-center text-gray-900">
                   Question
                 </div>
-                <div className="w-[500px] flex justify-center items-center text-gray-900">
+                <div className="w-[260px] h-full flex justify-start items-center text-gray-900">
+                  Category
+                </div>
+                <div className="w-[420px] h-full flex justify-start items-center text-gray-900">
                   Options
                 </div>
-                <div className="w-[300px] flex justify-center items-center text-gray-900">
+                <div className="w-[300px] h-full flex justify-start items-center text-gray-900">
                   Correct Answer
                 </div>
+                <div className="w-[249px] h-full flex justify-start items-center text-gray-900">
+                  Action
+                </div>
               </div>
+
               {questions?.map((q, index) => (
                 <div
                   key={index}
-                  className="w-full h-[60px] flex justify-start items-center bg-white border-b"
+                  className="w-[fit-content] h-[80px] flex justify-start items-center bg-white pl-4"
                 >
-                  <div className="w-[500px] flex justify-center items-center text-gray-700">
+                  <div className="w-[340px] h-full flex justify-start items-start text-gray-700">
                     {q.question}
                   </div>
-                  <div className="w-[500px] flex justify-center items-center text-gray-700">
-                    {q.options.join(", ")}
+                  <div className="w-[260px] h-full flex justify-start items-start text-gray-700">
+                    {q.category}
                   </div>
-                  <div className="w-[300px] flex justify-center items-center text-green-700 font-semibold">
+                  <div className="w-[420px] h-full flex justify-start items-start text-gray-700">
+                    {q.options.join(" | ")}
+                  </div>
+                  <div className="w-[300px] h-full flex justify-start items-start text-green-700">
                     {q.correctAnswer}
+                  </div>
+                  <div className="w-[249px] h-full flex justify-start items-start">
+                    [buttons here]
                   </div>
                 </div>
               ))}
@@ -258,18 +278,15 @@ const Questions = () => {
                       onChange={handleMultiSelectChange}
                       onBlur={handleBlur}
                     >
-                      <MenuItem key="Inequality" value="Rational Inequality">
-                        Rational Inequality
-                      </MenuItem>
-                      <MenuItem key="Function" value="Rational Function">
-                        Rational Function
-                      </MenuItem>
-                      <MenuItem key="Equation" value="Rational Equation">
-                        Rational Equation
-                      </MenuItem>
-                      <MenuItem key="None" value="None of the above">
-                        None of the above
-                      </MenuItem>
+                      {[
+                        ...new Set(
+                          questions.map((question) => question.correctAnswer)
+                        ),
+                      ].map((answer, index) => (
+                        <MenuItem key={index} value={answer}>
+                          {answer}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
 

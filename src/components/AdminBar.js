@@ -7,10 +7,7 @@ const AdminBar = ({ active, setActive }) => {
   return (
     <div className="w-[240px] h-[100vh]">
       <div className="w-full h-full flex flex-col justify-start items-center bg-[#191970]">
-        <div className="w-full flex justify-start items-center gap-3 px-6 py-12">
-          <TbMathFunction className="text-white" size={24} />
-          <span className="text-white text-[18px] mt-1">Mathematrix</span>
-        </div>
+        <div className="w-full flex justify-start items-center gap-3 px-6 py-12"></div>
 
         {/* <div
           className="w-full cursor-pointer hover:bg-white/20"
