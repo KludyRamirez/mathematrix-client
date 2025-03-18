@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import StarsCanvas from "../components/StarsCanvas";
 
 import crown from "../assets/images/crown.png";
+import silvertrophy from "../assets/images/silver-trophy.png";
 import rationalfunctions from "../assets/images/rational-functions-thumbnail.jpg";
 import rationalinequalities from "../assets/images/rational-inequalities-thumbnail.jpg";
 
@@ -42,7 +43,7 @@ const lectures = [
     thumbnail: rationalinequalities,
     link: "https://youtu.be/sq3my6iY7Ao?si=Evrbp853zTJaOUV0",
     description:
-      "This video is a secondary part and a continuation of the first rational inequalities video",
+      "This video is a secondary part and a continuation of the first rational inequalities video.",
   },
 ];
 
@@ -115,31 +116,40 @@ const HomePage = () => {
           </div>
         </div>
       )}
-      <div className="w-full h-screen flex items-start justify-center px-20">
-        <div className="w-full flex flex-col items-center justify-center">
-          <div className="w-full flex justify-between items-center py-20">
+      <div className="spacer-small"></div>
+      <div className="spacer-small"></div>
+      <div className="spacer-medium"></div>
+      <div className="w-full flex items-start justify-center">
+        <div className="w-full max-w-[1336px] flex flex-col items-center justify-center">
+          <div className="w-full flex flex-wrap justify-between items-center gap-16">
             <div className="flex justify-center items-center gap-8">
               <span className="text-[56px] font-bold text-6xl text-gray-900 font-[mighty] tracking-wide">
                 Mathematrix
               </span>
             </div>
             <div className="flex justify-end items-center gap-8">
-              <div className="w-[20px] h-[20px] bg-red-500 rounded-[50%]"></div>
-              <span className="text-[24px]">
-                Note:{" "}
-                <span className="font-[regular] text-yellow-500">
-                  Ready for testing but currently under construction.
-                </span>
-              </span>
+              <div className="w-[20px] h-[20px] bg-green-500 rounded-[50%]"></div>
+
               <span className="text-[24px] font-[mighty]">
                 Welcome, {user.username} !
               </span>
-              <div className="flex justify-center items-center w-[60px] h-[60px] font-[mighty] text-white text-2xl rounded-[50%] bg-blue-500 shadow-2xl shadow-sky-500/50">
-                {user.username.slice(0, 1).toUpperCase()}
+              <div
+                className="cursor-pointer pl-2 pr-5 py-2 flex justify-center items-center border-[1px] border-gray-300 rounded-[48px] gap-4 group hover:bg-blue-500 hover:border-blue-500"
+                onClick={() => handleLogout()}
+              >
+                <div className="flex justify-center items-center w-[50px] h-[50px] font-[mighty] text-white group-hover:text-blue-600 group-hover:bg-white text-2xl rounded-[50%] bg-blue-500">
+                  {user.username.slice(0, 1).toUpperCase()}
+                </div>
+                <span className="font-[mighty] text-[24px] group-hover:text-white">
+                  Sign out
+                </span>
               </div>
             </div>
           </div>
-          <div className="w-[1336px] flex flex-wrap justify-center items-start gap-8">
+          <div className="spacer-small"></div>
+          <div className="spacer-small"></div>
+          <div className="spacer-medium"></div>
+          <div className="w-full flex flex-wrap justify-center items-start gap-8">
             <Link to="/singleplayer">
               <div className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500">
                 <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[250px] group-hover:text-blue-600 group-hover:rotate-[40deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
@@ -257,8 +267,8 @@ const HomePage = () => {
               </span>
               <input
                 name="search"
-                className="w-[274px] h-[46px] border-[1px] border-blue-300 px-4 focus:outline-none focus:border-blue-400 rounded-[32px] font-[extra-light]"
-                placeholder="Search lectures..."
+                className="w-[274px] h-[46px] border-[1px] border-blue-300 px-4 focus:outline-none focus:border-[2px] focus:border-blue-500 rounded-[8px] font-[vip-regular]"
+                placeholder="Search lectures.."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -277,7 +287,7 @@ const HomePage = () => {
                   >
                     <img
                       src={lecture.thumbnail}
-                      className="cursor-pointer aspect-[3/2] rounded-2xl"
+                      className="cursor-pointer aspect-[3/2] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-xl shadow-sky-500/10"
                       alt=""
                     />
                   </div>
@@ -298,18 +308,18 @@ const HomePage = () => {
                   <div className="spacer-xs"></div>
                   <div className="w-full flex flex-wrap justify-start items-start gap-4">
                     <a href={lecture.link} target="blank">
-                      <div className="cursor-pointer w-[fit-content] flex justify-center items-center gap-2 p-2 bg-white text-[14px] text-red-500 rounded-[50%] border-[1px] border-gray-300 hover:bg-red-500 hover:text-white hover:border-red-500">
+                      <div className="cursor-pointer w-[fit-content] flex justify-center items-center gap-2 p-2 bg-white text-[14px] text-red-500 rounded-[50%] hover:border-[1px] hover:bg-red-500 hover:text-white hover:border-red-500">
                         <BsYoutube size={18} />
                       </div>
                     </a>
                   </div>
                   <div className="spacer-small"></div>
                   <div className="w-full flex flex-wrap justify-start items-start gap-2">
-                    <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[32px]">
+                    <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[8px]">
                       {/* <FaReact size={16} /> */}
                       <div className="mt-[2px] tracking-wide">Core</div>
                     </div>
-                    <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[32px]">
+                    <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[8px]">
                       {/* <FaJava size={16} /> */}
                       <div className="mt-[2px] tracking-wide">Gen Math</div>
                     </div>
@@ -339,7 +349,7 @@ const HomePage = () => {
                 {leaderboard.slice(0, 1).map((player, index) => (
                   <div
                     key={player._id}
-                    className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/60 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200"
+                    className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200"
                   >
                     <img src={crown} alt="" className="w-[90px] -mt-[12px]" />
                     <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block">
@@ -349,7 +359,7 @@ const HomePage = () => {
                       {player._id}
                     </span>
                     <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block">
-                      {player.totalCorrect}
+                      {player.elo}
                     </span>
                   </div>
                 ))}
@@ -375,7 +385,7 @@ const HomePage = () => {
                         {player._id}
                       </span>
                       <span className="whitespace-nowrap font-[mighty] text-[48px] text-blue-950 inline-block">
-                        {player.totalCorrect}
+                        {player.elo}
                       </span>
                     </div>
                   );
@@ -410,7 +420,7 @@ const HomePage = () => {
                             key={player._id}
                             className={`text-[20px] ${
                               index % 2 === 0
-                                ? "bg-blue-100/60"
+                                ? "bg-blue-100/30"
                                 : "bg-transparent"
                             }`}
                           >
@@ -428,7 +438,7 @@ const HomePage = () => {
                               {player.totalIncorrect}
                             </td>
                             <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                              1990
+                              {player.elo}
                             </td>
                           </tr>
                         ))
@@ -460,18 +470,29 @@ const HomePage = () => {
             </div>
             <div className="spacer-medium"></div>
             <div className="w-full flex flex-col justify-center items-center">
-              <div className="w-full flex flex-col justify-center items-center px-8">
-                <div className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/60 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200">
-                  <img src={crown} alt="" className="w-[90px] -mt-[12px]" />
-                  <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block">
-                    1st
-                  </span>
-                  <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[36px] text-yellow-950 pt-2 inline-block">
-                    James Jameson
-                  </span>
-                  <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block">
-                    1978
-                  </span>
+              <div className="w-full flex flex-col justify-center items-center">
+                <div className="w-full flex flex-col justify-center items-center px-8">
+                  {matchHistory.slice(0, 1).map((match, index) => (
+                    <div
+                      key={match._id}
+                      className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200"
+                    >
+                      <img
+                        src={silvertrophy}
+                        alt=""
+                        className="w-[90px] -mt-[12px]"
+                      />
+                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block">
+                        {new Date(match.date).toLocaleDateString()}
+                      </span>
+                      <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[36px] text-yellow-950 pt-2 inline-block">
+                        {match.mode}
+                      </span>
+                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block">
+                        {match.result}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="spacer-xs"></div>
@@ -485,7 +506,10 @@ const HomePage = () => {
                           Date
                         </th>
                         <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                          Type
+                          Time
+                        </th>
+                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                          Mode
                         </th>
                         <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
                           Result
@@ -499,12 +523,18 @@ const HomePage = () => {
                             key={index}
                             className={`text-[20px] ${
                               index % 2 === 0
-                                ? "bg-blue-100/60"
+                                ? "bg-blue-100/30"
                                 : "bg-transparent"
                             }`}
                           >
                             <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
                               {new Date(match.date).toLocaleDateString()}
+                            </td>
+                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                              {new Date(match.date).toLocaleTimeString(
+                                "en-US",
+                                { hour: "2-digit", minute: "2-digit" }
+                              )}
                             </td>
                             <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
                               {match.mode}
@@ -526,7 +556,7 @@ const HomePage = () => {
                         <tr>
                           <td
                             colSpan="3"
-                            className="p-2 text-center text-gray-400"
+                            className="p-4 text-center text-gray-500 text-[18px]"
                           >
                             No match history found.
                           </td>

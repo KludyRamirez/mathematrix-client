@@ -7,7 +7,7 @@ const Loading = ({ color, loading }) => {
       <RiseLoader
         color={color}
         loading={loading}
-        size={50}
+        size={45}
         aria-label="Loading Spinner"
         data-testid="loader"
       />

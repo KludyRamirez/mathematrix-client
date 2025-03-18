@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
+import Loading from "../components/Loading";
+import StarsCanvas from "./StarsCanvas";
 
 const SinglePlayerGame = () => {
   const { user } = useSelector((state) => state.auth);
@@ -17,6 +19,7 @@ const SinglePlayerGame = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answerFeedback, setAnswerFeedback] = useState(null);
   const [gameCanceled, setGameCanceled] = useState(false);
+  const [color, setColor] = useState("");
 
   const navigate = useNavigate();
 
@@ -64,8 +67,7 @@ const SinglePlayerGame = () => {
   const submitAnswer = async (answer) => {
     if (!gameId || currentQuestionIndex >= questions.length) return;
 
-    setSelectedAnswer(answer); // Show selected answer immediately
-
+    setSelectedAnswer(answer);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/singleplayer/answer`,
@@ -79,9 +81,11 @@ const SinglePlayerGame = () => {
       if (response.data.correct) {
         setCorrectAnswers((prev) => prev + 1);
         setAnswerFeedback("correct");
+        setColor("#0FFF50");
       } else {
         setIncorrectAnswers((prev) => prev + 1);
         setAnswerFeedback("incorrect");
+        setColor("#f00");
       }
 
       // Wait 1 second before moving to the next question
@@ -148,57 +152,165 @@ const SinglePlayerGame = () => {
     startGame();
   };
 
-  if (!questions.length)
-    return <h2 className="loading">Loading questions...</h2>;
-
+  if (!questions.length) return <Loading />;
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-100 to-blue-50 text-gray-800 p-6">
+    <div className="flex flex-col items-center relative justify-center min-h-screen text-gray-800 bg-blue-100/10">
+      <StarsCanvas />
       {!gameOver && !gameCanceled ? (
         <>
-          <div className="self-end py-2 px-4"></div>
-          <div className="mb-6">{questions[currentQuestionIndex].category}</div>
+          <div className="h-screen relative z-20 flex flex-col items-center justify-center">
+            <div className="font-[retro] text-6xl text-blue-950">
+              Single Player
+            </div>
+            <div className="spacer-small" />
+            <div className="spacer-medium" />
+            {/* <div className="mb-6">{questions[currentQuestionIndex]?.category}</div> */}
 
-          <span className="text-[72px] font-semibold">
+            {/* <span className="text-[72px] font-semibold">
             {Math.floor(timer / 60)}:{timer % 60 < 10 ? "0" : ""}
             {timer % 60}
-          </span>
+          </span> */}
 
-          {/* Question Display */}
-          <h3 className="text-xl font-[extra-light] my-6">
+            {/* Question Display */}
+            {/* <h3 className="text-xl font-[extra-light] my-6">
             Question {currentQuestionIndex + 1}
-          </h3>
+          </h3> */}
 
-          {/* Timer Bar */}
+            {/* Timer Bar */}
 
-          <div className="w-full max-w-lg bg-white rounded-full shadow-md overflow-hidden mb-4">
-            <div
-              className="h-4 bg-gradient-to-r from-blue-300 to-blue-500 transition-all duration-500"
-              style={{ width: `${(timer / 900) * 100}%` }}
-            ></div>
-          </div>
+            <div className="bg-blue-600 rounded-tl-3xl rounded-tr-3xl shadow-md text-white w-[480px] flex flex-col justify-center items-center text-4xl text-blue-950">
+              <div className="w-full flex justify-between items-center px-6 py-6">
+                <span className="font-[extra-light] text-[24px]">Solve:</span>
+                <div className="flex justify-center items-center">
+                  <div className="w-[4px] h-[10px] bg-white"></div>
+                  <div className="w-[26px] h-[18px] border-[2px] border-white">
+                    <div className="w-full bg-blue-500 overflow-hidden transform scale-x-[-1]">
+                      <div
+                        className="h-[14px] bg-white transition-all duration-500"
+                        style={{ width: `${(timer / 900) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full flex justify-center items-center font-[extra-light] px-6 pb-14 text-3xl">
+                {questions[currentQuestionIndex]?.question ? (
+                  <BlockMath math={questions[currentQuestionIndex].question} />
+                ) : (
+                  <span className="font-[mighty]">
+                    You have finished the game!
+                  </span>
+                )}
+              </div>
+            </div>
 
-          <p className="w-[512px] bg-white shadow-lg rounded-lg p-4 text-center text-lg mt-4">
-            <BlockMath math={questions[currentQuestionIndex].question} />
-          </p>
+            <div className="w-[480px] bg-[#fdfdfd] shadow-sm shadow-gray-200 rounded-bl-3xl rounded-br-3xl border-[1px] border-gray-200 p-6">
+              <div className="w-full h-[fit-content] flex justify-between items-center px-4">
+                <div className="flex justify-center items-end gap-6">
+                  <div
+                    className="flex flex-col items-center gap-4"
+                    onClick={() => navigate("/")}
+                  >
+                    <span className="font-[vip-bold]">Quit</span>
+                    <div className="cursor-pointer w-[30px] h-[50px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg]"></div>
+                  </div>
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="cursor-pointer w-[30px] h-[50px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg]"></div>
+                  </div>
+                </div>
 
-          {/* Options */}
-          <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
-            {questions[currentQuestionIndex].options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => submitAnswer(option)}
-                className={`py-3 px-6 rounded-lg font-semibold text-lg shadow-md transition-all duration-300 ${
-                  selectedAnswer === option
-                    ? answerFeedback === "correct"
-                      ? "bg-green-400 text-white"
-                      : "bg-red-400 text-white"
-                    : "bg-white hover:bg-blue-600 text-gray-900 hover:text-white"
-                }`}
-                disabled={selectedAnswer !== null}
-              >
-                {option}
-              </button>
-            ))}
+                <div className="w-[60px] h-[60px] rounded-[50%]">
+                  <div className="w-full h-full flex justify-center items-center">
+                    <div
+                      className={`w-full h-full bg-green-500 rounded-full ${
+                        answerFeedback === "correct"
+                          ? "bg-gradient-to-b from-green-400 to-green-700"
+                          : "bg-gradient-to-b from-red-400 to-red-700"
+                      } relative`}
+                    >
+                      <div className="absolute top-2 left-4 w-6 h-6 bg-white rounded-full opacity-50 blur-[2px]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="spacer-xs"></div>
+              <div className="spacer-small"></div>
+
+              <div className="w-full h-[fit-content] flex flex-col justify-center items-center gap-4">
+                <div
+                  onClick={() =>
+                    submitAnswer(questions[currentQuestionIndex]?.options[0])
+                  }
+                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                    selectedAnswer ===
+                    questions[currentQuestionIndex]?.options[0]
+                      ? answerFeedback === "correct"
+                        ? "bg-green-400 text-white"
+                        : "bg-red-400 text-white"
+                      : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                  }`}
+                  disabled={selectedAnswer !== null}
+                >
+                  {questions[currentQuestionIndex]?.options[0]}
+                </div>
+
+                <div className="w-full flex justify-center items-center gap-4">
+                  <div
+                    onClick={() =>
+                      submitAnswer(questions[currentQuestionIndex]?.options[1])
+                    }
+                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                      selectedAnswer ===
+                      questions[currentQuestionIndex]?.options[1]
+                        ? answerFeedback === "correct"
+                          ? "bg-green-400 text-white"
+                          : "bg-red-400 text-white"
+                        : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                    }`}
+                    disabled={selectedAnswer !== null}
+                  >
+                    {questions[currentQuestionIndex]?.options[1]}
+                  </div>
+
+                  <div
+                    onClick={() =>
+                      submitAnswer(questions[currentQuestionIndex]?.options[2])
+                    }
+                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                      selectedAnswer ===
+                      questions[currentQuestionIndex]?.options[2]
+                        ? answerFeedback === "correct"
+                          ? "bg-green-400 text-white"
+                          : "bg-red-400 text-white"
+                        : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                    }`}
+                    disabled={selectedAnswer !== null}
+                  >
+                    {questions[currentQuestionIndex]?.options[2]}
+                  </div>
+                </div>
+
+                <div
+                  onClick={() =>
+                    submitAnswer(questions[currentQuestionIndex]?.options[3])
+                  }
+                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                    selectedAnswer ===
+                    questions[currentQuestionIndex]?.options[3]
+                      ? answerFeedback === "correct"
+                        ? "bg-green-400 text-white"
+                        : "bg-red-400 text-white"
+                      : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                  }`}
+                  disabled={selectedAnswer !== null}
+                >
+                  {questions[currentQuestionIndex]?.options[3]}
+                </div>
+              </div>
+
+              <div className="spacer-xs"></div>
+              <div className="spacer-small"></div>
+            </div>
           </div>
         </>
       ) : (

@@ -76,7 +76,7 @@ const LoginPage = () => {
   return (
     <div id="login" className="relative">
       <MatrixEffect />
-      <div className="flex w-full h-[100vh]">
+      <div className="flex w-full h-[100vh] relative">
         <div className="bg-transparent w-[58%] h-[100vh]"></div>
         <div className="bg-white w-full max-w-[50rem] h-full px-[1.75rem] md:px-[1.25rem] relative z-20">
           <div className="spacer-xs"></div>
