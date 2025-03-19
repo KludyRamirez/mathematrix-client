@@ -7,6 +7,8 @@ import {
   BsBookmarkStar,
   BsClockHistory,
   BsController,
+  BsFilter,
+  BsSearch,
   BsTrophy,
 } from "react-icons/bs";
 import controller from "../assets/images/controller.png";
@@ -65,7 +67,7 @@ const HomePage = () => {
 
   const fetchLeaderboard = async () => {
     try {
-      const response = await api.get(`/singleplayer/leaderboard`);
+      const response = await api.get("/singleplayer/leaderboard");
       setLeaderboard(response.data);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
@@ -128,19 +130,14 @@ const HomePage = () => {
               </span>
             </div>
             <div className="flex justify-end items-center gap-8">
-              <div className="w-[20px] h-[20px] bg-green-500 rounded-[50%]"></div>
-
-              <span className="text-[24px] font-[mighty]">
-                Welcome, {user.username} !
-              </span>
               <div
                 className="cursor-pointer pl-2 pr-5 py-2 flex justify-center items-center border-[1px] border-gray-300 rounded-[48px] gap-4 group hover:bg-blue-500 hover:border-blue-500"
                 onClick={() => handleLogout()}
               >
-                <div className="flex justify-center items-center w-[50px] h-[50px] font-[mighty] text-white group-hover:text-blue-600 group-hover:bg-white text-2xl rounded-[50%] bg-blue-500">
+                <div className="font-[vip-bold] flex justify-center items-center w-[50px] h-[50px] font-[mighty] text-white group-hover:text-blue-600 group-hover:bg-white text-2xl rounded-[50%] bg-blue-500">
                   {user.username.slice(0, 1).toUpperCase()}
                 </div>
-                <span className="font-[mighty] text-[24px] group-hover:text-white">
+                <span className="font-[semi-bold] text-[22px] group-hover:text-white">
                   Sign out
                 </span>
               </div>
@@ -259,73 +256,88 @@ const HomePage = () => {
           <div
             className={`${
               active === "Lectures" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-blue-300/10`}
+            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
           >
-            <div className="w-full flex justify-between items-center px-8">
+            <div className="w-full flex justify-between items-center px-8 ">
               <span className="text-[38px] font-[vip-regular] text-blue-600">
                 Lectures
               </span>
-              <input
-                name="search"
-                className="w-[274px] h-[46px] border-[1px] border-blue-300 px-4 focus:outline-none focus:border-[2px] focus:border-blue-500 rounded-[8px] font-[vip-regular]"
-                placeholder="Search lectures.."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  name="search"
+                  className="w-[274px] h-[48px] border-[1px] border-blue-300 px-4 focus:outline-none focus:border-[2px] focus:border-blue-500 rounded-[12px] font-[mighty] tracking-wider"
+                  placeholder="Search lectures.."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <BsFilter
+                  size={32}
+                  className="absolute top-2 right-3 text-blue-300"
+                />
+              </div>
             </div>
+            <div className="spacer-small"></div>
             <div className="spacer-medium"></div>
             <div className="w-full flex justify-start items-start gap-8 px-8">
-              {filteredLectures?.map((lecture) => (
-                <div
-                  key={lecture.name}
-                  className="w-[445px] flex flex-col justify-start items-start group relative"
-                  onClick={() => handleVideoPlayer(lecture.link)}
-                >
+              {filteredLectures.length > 0 ? (
+                filteredLectures?.map((lecture) => (
                   <div
-                    className="
-                relative cursor-pointer"
+                    key={lecture.name}
+                    className="w-[445px] flex flex-col justify-start items-start group relative"
+                    onClick={() => handleVideoPlayer(lecture.link)}
                   >
-                    <img
-                      src={lecture.thumbnail}
-                      className="cursor-pointer aspect-[3/2] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-xl shadow-sky-500/10"
-                      alt=""
-                    />
-                  </div>
-                  <div className="spacer-small"></div>
-                  <div className="flex align-items gap-2 text-[.850rem] text-gray-500 font-[extra-light]">
-                    <span>March 16, 2025</span>
-                    <span>|</span>
-                    <span>by Mathematrix</span>
-                  </div>
-                  <div className="spacer-xs"></div>
-                  <a href={lecture.link} target="blank">
-                    <div className="text-[#282828] cursor-pointer group-hover:underline">
-                      {lecture.name}
+                    <div
+                      className="
+                relative cursor-pointer"
+                    >
+                      <img
+                        src={lecture.thumbnail}
+                        className="cursor-pointer aspect-[3/2] rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl rounded-br-2xl shadow-xl shadow-sky-500/10"
+                        alt=""
+                      />
                     </div>
-                  </a>
-                  <div className="spacer-xs"></div>
-                  <div className="text-[#282828]">{lecture.description}</div>
-                  <div className="spacer-xs"></div>
-                  <div className="w-full flex flex-wrap justify-start items-start gap-4">
+                    <div className="spacer-small"></div>
+                    <div className="flex align-items gap-2 text-[.850rem] text-gray-500 font-[extra-light]">
+                      <span>March 16, 2025</span>
+                      <span>|</span>
+                      <span>by Mathematrix</span>
+                    </div>
+                    <div className="spacer-xs"></div>
                     <a href={lecture.link} target="blank">
-                      <div className="cursor-pointer w-[fit-content] flex justify-center items-center gap-2 p-2 bg-white text-[14px] text-red-500 rounded-[50%] hover:border-[1px] hover:bg-red-500 hover:text-white hover:border-red-500">
-                        <BsYoutube size={18} />
+                      <div className="text-[#282828] cursor-pointer group-hover:underline">
+                        {lecture.name}
                       </div>
                     </a>
+                    <div className="spacer-xs"></div>
+                    <div className="text-[#282828]">{lecture.description}</div>
+                    <div className="spacer-xs"></div>
+                    <div className="w-full flex flex-wrap justify-start items-start gap-4">
+                      <a href={lecture.link} target="blank">
+                        <div className="cursor-pointer w-[fit-content] flex justify-center items-center gap-2 p-2 bg-white text-[14px] text-red-500 rounded-[50%] hover:border-[1px] hover:bg-red-500 hover:text-white hover:border-red-500">
+                          <BsYoutube size={18} />
+                        </div>
+                      </a>
+                    </div>
+                    <div className="spacer-small"></div>
+                    <div className="w-full flex flex-wrap justify-start items-start gap-2">
+                      <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[4px]">
+                        {/* <FaReact size={16} /> */}
+                        <div className="mt-[2px] tracking-wide">Core</div>
+                      </div>
+                      <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[4px]">
+                        {/* <FaJava size={16} /> */}
+                        <div className="mt-[2px] tracking-wide">Gen Math</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="spacer-small"></div>
-                  <div className="w-full flex flex-wrap justify-start items-start gap-2">
-                    <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[8px]">
-                      {/* <FaReact size={16} /> */}
-                      <div className="mt-[2px] tracking-wide">Core</div>
-                    </div>
-                    <div className="cursor-pointer w-[fit-content] flex justify-center items-center py-1 px-3 gap-2 border-[1px] border-gray-300 bg-white text-[14px] text-[#282828] hover:border-[#282828] hover:bg-[#282828] hover:text-white rounded-[8px]">
-                      {/* <FaJava size={16} /> */}
-                      <div className="mt-[2px] tracking-wide">Gen Math</div>
-                    </div>
+                ))
+              ) : (
+                <div className="w-full flex justify-center items-center">
+                  <div className="px-4 py-20 text-center text-gray-400">
+                    No lectures available.
                   </div>
                 </div>
-              ))}
+              )}
             </div>
             <div className="spacer-medium"></div>
             <div className="w-full flex justify-start items-start">
@@ -338,7 +350,7 @@ const HomePage = () => {
           <div
             className={`${
               active === "Leaderboards" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-blue-300/10`}
+            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
           >
             <div className="text-[38px] font-[vip-regular] text-blue-600 px-8">
               Leaderboards
@@ -349,16 +361,23 @@ const HomePage = () => {
                 {leaderboard.slice(0, 1).map((player, index) => (
                   <div
                     key={player._id}
-                    className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200"
+                    className="w-full flex items-center justify-center relative leading-none gap-8 py-14 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
                   >
-                    <img src={crown} alt="" className="w-[90px] -mt-[12px]" />
-                    <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block">
+                    <div className="absolute top-0 left-0 w-full h-[192px]">
+                      <div className="wave"></div>
+                    </div>
+                    <img
+                      src={crown}
+                      alt=""
+                      className="w-[90px] -mt-[12px] z-20"
+                    />
+                    <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block z-20">
                       {index + 1}st
                     </span>
-                    <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[36px] text-yellow-950 pt-2 inline-block">
+                    <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[72px] text-yellow-950 pt-2 inline-block z-20">
                       {player._id}
                     </span>
-                    <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block">
+                    <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block z-20">
                       {player.elo}
                     </span>
                   </div>
@@ -446,7 +465,7 @@ const HomePage = () => {
                         <tr>
                           <td
                             colSpan="5"
-                            className="px-4 py-3 text-center text-gray-400"
+                            className="px-4 py-20 text-center text-gray-400"
                           >
                             No leaderboard data available.
                           </td>
@@ -463,7 +482,7 @@ const HomePage = () => {
           <div
             className={`${
               active === "History" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-blue-300/10`}
+            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
           >
             <div className="text-[38px] font-[vip-regular] text-blue-600 px-8">
               History
@@ -475,20 +494,23 @@ const HomePage = () => {
                   {matchHistory.slice(0, 1).map((match, index) => (
                     <div
                       key={match._id}
-                      className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200"
+                      className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
                     >
+                      <div className="absolute top-0 left-0 w-full h-[192px]">
+                        <div className="metal-wave"></div>
+                      </div>
                       <img
                         src={silvertrophy}
                         alt=""
-                        className="w-[90px] -mt-[12px]"
+                        className="w-[90px] -mt-[12px] z-20"
                       />
-                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block">
+                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block z-20">
                         {new Date(match.date).toLocaleDateString()}
                       </span>
-                      <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[36px] text-yellow-950 pt-2 inline-block">
+                      <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[72px] text-yellow-950 pt-2 inline-block z-20">
                         {match.mode}
                       </span>
-                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block">
+                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block z-20">
                         {match.result}
                       </span>
                     </div>

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import Loading from "../components/Loading";
-import StarsCanvas from "./StarsCanvas";
 
 const SinglePlayerGame = () => {
   const { user } = useSelector((state) => state.auth);
@@ -19,7 +18,6 @@ const SinglePlayerGame = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answerFeedback, setAnswerFeedback] = useState(null);
   const [gameCanceled, setGameCanceled] = useState(false);
-  const [color, setColor] = useState("");
 
   const navigate = useNavigate();
 
@@ -81,14 +79,11 @@ const SinglePlayerGame = () => {
       if (response.data.correct) {
         setCorrectAnswers((prev) => prev + 1);
         setAnswerFeedback("correct");
-        setColor("#0FFF50");
       } else {
         setIncorrectAnswers((prev) => prev + 1);
         setAnswerFeedback("incorrect");
-        setColor("#f00");
       }
 
-      // Wait 1 second before moving to the next question
       setTimeout(() => {
         setSelectedAnswer(null);
         setAnswerFeedback(null);
@@ -154,16 +149,19 @@ const SinglePlayerGame = () => {
 
   if (!questions.length) return <Loading />;
   return (
-    <div className="flex flex-col items-center relative justify-center min-h-screen text-gray-800 bg-blue-100/10">
-      <StarsCanvas />
+    <div className="flex flex-col items-center relative justify-center min-h-screen">
+      <div className="absolute top-0 left-0 w-[100vw] h-[100vh]">
+        <div className="wave"></div>
+      </div>
       {!gameOver && !gameCanceled ? (
         <>
-          <div className="h-screen relative z-20 flex flex-col items-center justify-center">
-            <div className="font-[retro] text-6xl text-blue-950">
-              Single Player
+          <div className="relative z-20 flex flex-col items-center justify-center">
+            {/* <div className="w-full p-4 bg-gradient-to-b from-blue-100 via-white to-blue-100 flex justify-center items-center shadow-2xl rounded-2xl">
+              <div className="font-[mighty] text-6xl text-blue-950">
+                Single Player
+              </div>
             </div>
-            <div className="spacer-small" />
-            <div className="spacer-medium" />
+            <div className="spacer-medium" /> */}
             {/* <div className="mb-6">{questions[currentQuestionIndex]?.category}</div> */}
 
             {/* <span className="text-[72px] font-semibold">
@@ -178,8 +176,8 @@ const SinglePlayerGame = () => {
 
             {/* Timer Bar */}
 
-            <div className="bg-blue-600 rounded-tl-3xl rounded-tr-3xl shadow-md text-white w-[480px] flex flex-col justify-center items-center text-4xl text-blue-950">
-              <div className="w-full flex justify-between items-center px-6 py-6">
+            <div className="bg-blue-600 rounded-3xl text-white w-[480px] flex flex-col justify-center items-center text-4xl shadow-2xl">
+              <div className="w-full flex justify-between items-center px-6 py-6 shadow-2xl shadow-blue-700">
                 <span className="font-[extra-light] text-[24px]">Solve:</span>
                 <div className="flex justify-center items-center">
                   <div className="w-[4px] h-[10px] bg-white"></div>
@@ -193,7 +191,7 @@ const SinglePlayerGame = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full flex justify-center items-center font-[extra-light] px-6 pb-14 text-3xl">
+              <div className="w-full flex justify-center items-center font-[extra-light] px-6 pt-10 pb-12 text-3xl">
                 {questions[currentQuestionIndex]?.question ? (
                   <BlockMath math={questions[currentQuestionIndex].question} />
                 ) : (
@@ -203,33 +201,27 @@ const SinglePlayerGame = () => {
                 )}
               </div>
             </div>
-
-            <div className="w-[480px] bg-[#fdfdfd] shadow-sm shadow-gray-200 rounded-bl-3xl rounded-br-3xl border-[1px] border-gray-200 p-6">
+            <div className="spacer-xs"></div>
+            <div className="spacer-small"></div>
+            <div className="w-[480px] bg-gradient-to-b from-blue-100 via-white to-blue-100 shadow-2xl rounded-3xl p-6 relative">
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 flex justify-center items-center z-20">
+                <div className="w-[10px] h-[10px] border-[1px] rounded-tl-[4px] rounded-bl-[4px] shadow-sm bg-gradient-to-b from-blue-200 to-white"></div>
+                <div className="w-[30px] h-[40px] border-[1px] rounded-tl-[4px] rounded-bl-[4px] shadow-md bg-gradient-to-b from-gray-200 to-white"></div>
+                <div className="w-[40px] h-[46px] rounded-[4px] border-[1px] border-gray-200 shadow-md bg-gradient-to-b from-gray-200 to-white"></div>
+                <div className="w-[30px] h-[40px] border-[1px] rounded-tr-[4px] rounded-br-[4px] shadow-md bg-gradient-to-b from-gray-200 to-white"></div>
+                <div className="w-[10px] h-[10px] rounded-tr-[4px] rounded-br-[4px] shadow-sm bg-gradient-to-b from-blue-200 to-white"></div>
+              </div>
+              <div className="spacer-small"></div>
               <div className="w-full h-[fit-content] flex justify-between items-center px-4">
                 <div className="flex justify-center items-end gap-6">
                   <div
                     className="flex flex-col items-center gap-4"
-                    onClick={() => navigate("/")}
+                    onClick={() => quitGame()}
                   >
-                    <span className="font-[vip-bold]">Quit</span>
-                    <div className="cursor-pointer w-[30px] h-[50px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg]"></div>
+                    <div className="cursor-pointer w-[40px] h-[40px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg] shadow-md"></div>
                   </div>
                   <div className="flex flex-col items-center gap-4">
-                    <div className="cursor-pointer w-[30px] h-[50px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg]"></div>
-                  </div>
-                </div>
-
-                <div className="w-[60px] h-[60px] rounded-[50%]">
-                  <div className="w-full h-full flex justify-center items-center">
-                    <div
-                      className={`w-full h-full bg-green-500 rounded-full ${
-                        answerFeedback === "correct"
-                          ? "bg-gradient-to-b from-green-400 to-green-700"
-                          : "bg-gradient-to-b from-red-400 to-red-700"
-                      } relative`}
-                    >
-                      <div className="absolute top-2 left-4 w-6 h-6 bg-white rounded-full opacity-50 blur-[2px]"></div>
-                    </div>
+                    <div className="cursor-pointer w-[40px] h-[40px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg] shadow-md"></div>
                   </div>
                 </div>
               </div>
@@ -247,7 +239,7 @@ const SinglePlayerGame = () => {
                       ? answerFeedback === "correct"
                         ? "bg-green-400 text-white"
                         : "bg-red-400 text-white"
-                      : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                      : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                   }`}
                   disabled={selectedAnswer !== null}
                 >
@@ -265,7 +257,7 @@ const SinglePlayerGame = () => {
                         ? answerFeedback === "correct"
                           ? "bg-green-400 text-white"
                           : "bg-red-400 text-white"
-                        : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                        : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                     }`}
                     disabled={selectedAnswer !== null}
                   >
@@ -282,7 +274,7 @@ const SinglePlayerGame = () => {
                         ? answerFeedback === "correct"
                           ? "bg-green-400 text-white"
                           : "bg-red-400 text-white"
-                        : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                        : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                     }`}
                     disabled={selectedAnswer !== null}
                   >
@@ -294,13 +286,13 @@ const SinglePlayerGame = () => {
                   onClick={() =>
                     submitAnswer(questions[currentQuestionIndex]?.options[3])
                   }
-                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-blue-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
                     selectedAnswer ===
                     questions[currentQuestionIndex]?.options[3]
                       ? answerFeedback === "correct"
                         ? "bg-green-400 text-white"
                         : "bg-red-400 text-white"
-                      : "border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                      : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                   }`}
                   disabled={selectedAnswer !== null}
                 >
@@ -314,8 +306,7 @@ const SinglePlayerGame = () => {
           </div>
         </>
       ) : (
-        /* Game Over Screen */
-        <div className="text-center">
+        <div className="text-center relative z-20">
           {gameCanceled ? (
             <h2 className="text-2xl font-bold text-red-500">Game Canceled</h2>
           ) : (
@@ -352,10 +343,10 @@ const SinglePlayerGame = () => {
               Restart
             </button>
             <button
-              onClick={quitGame}
+              onClick={() => navigate("/")}
               className="bg-gray-500 text-white py-3 px-6 shadow-md hover:bg-gray-600"
             >
-              Quit
+              Go back to Home
             </button>
           </div>
         </div>
