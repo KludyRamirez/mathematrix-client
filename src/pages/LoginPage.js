@@ -150,9 +150,6 @@ const LoginPage = () => {
             </form>
             <div className="spacer-xs"></div>
             <div className="spacer-medium"></div>
-            <div className="cursor-pointer text-red-500 hover:underline">
-              Forgot Password?
-            </div>
             <div className="spacer-small"></div>
             <div
               className="cursor-pointer text-[#282828] hover:underline"
