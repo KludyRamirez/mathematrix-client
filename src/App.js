@@ -9,10 +9,13 @@ import AdminPage from "./pages/AdminPage";
 import PrivateRoute from "./components/PrivateRoute";
 import RegisterPage from "./pages/RegisterPage";
 import Matchmaking from "./components/Matchmaking";
-// import MultiPlayerGame from "./components/MultiPlayerGame";
 import SinglePlayerGame from "./components/SinglePlayerGame";
+import MultiPlayerGame from "./components/MultiPlayerGame";
+
+import io from "socket.io-client";
 
 const App = () => {
+  const socket = io(process.env.REACT_APP_SOCKET_API);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -76,8 +79,14 @@ const App = () => {
             }
           />
 
-          <Route path="/matchmaking" element={<Matchmaking />} />
-          {/* <Route path="/multiplayer" element={<MultiPlayerGame />} /> */}
+          <Route
+            path="/matchmaking"
+            element={<Matchmaking socket={socket} />}
+          />
+          <Route
+            path="/multiplayer/:matchId"
+            element={<MultiPlayerGame socket={socket} />}
+          />
           <Route
             path="/singleplayer"
             element={

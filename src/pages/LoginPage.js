@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../store/actions/authActions";
 import { useNavigate } from "react-router-dom";
-import MatrixEffect from "../utils/matrixEffect";
+import MatrixEffect from "../utils/MatrixRain";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -76,9 +76,9 @@ const LoginPage = () => {
   return (
     <div id="login" className="relative">
       <MatrixEffect />
-      <div className="flex w-full h-[100vh] relative">
-        <div className="bg-transparent w-[58%] h-[100vh]"></div>
-        <div className="bg-white w-full max-w-[50rem] h-full px-[1.75rem] md:px-[1.25rem] relative z-20">
+      <div className="flex justify-center w-full h-[100vh] relative">
+        {/* <div className="bg-transparent w-[58%] h-[100vh]"></div> */}
+        <div className="bg-gradient-to-b from-white to-white shadow-xl w-full max-w-[45rem] h-full px-[1.75rem] md:px-[1.25rem] relative z-20">
           <div className="spacer-xs"></div>
           <div className="spacer-small"></div>
           <div className="spacer-small"></div>
@@ -86,7 +86,7 @@ const LoginPage = () => {
 
           <div className="w-full flex flex-col justify-start items-center">
             <span className="text-[48px] text-[#282828] font-[extra-light-italic]">
-              Welcome back, micros
+              Mathematrix
               <span className="font-[extra-light]"> */</span>
             </span>
             <div className="spacer-small"></div>

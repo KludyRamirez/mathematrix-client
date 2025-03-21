@@ -5,9 +5,10 @@ import * as random from "maath/random";
 
 const StarBackground = (props) => {
   const ref = useRef(null);
-  const [sphere] = useState(() =>
-    random.inSphere(new Float32Array(3000), { radius: 1.2 })
-  );
+  const [sphere] = useState(() => {
+    const positions = random.onSphere(new Float32Array(3000), { radius: 1.2 });
+    return positions;
+  });
 
   useFrame((_, delta) => {
     if (ref.current) {
@@ -21,8 +22,8 @@ const StarBackground = (props) => {
       <Points ref={ref} positions={sphere} stride={3} frustumCulled {...props}>
         <PointMaterial
           transparent
-          color="black"
-          size={0.0014}
+          color="blue"
+          size={0.01}
           sizeAttenuation={true}
           depthWrite={false}
         />

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { register } from "../store/actions/authActions";
 import { useNavigate } from "react-router-dom";
-import MatrixEffect from "../utils/matrixEffect";
+import MatrixEffect from "../utils/MatrixRain";
 
 const RegisterPage = () => {
   const dispatch = useDispatch();

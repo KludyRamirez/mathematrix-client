@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import Loading from "../components/Loading";
+import OtherMatrixRain from "../utils/OtherMatrixRain";
 
 const SinglePlayerGame = () => {
   const { user } = useSelector((state) => state.auth);
@@ -26,14 +27,21 @@ const SinglePlayerGame = () => {
 
     const handleExit = async () => {
       if (!gameOver && gameId) {
-        await cancelGame();
+          await cancelGame();
       }
     };
 
+    const disableBack = () => {
+        window.history.pushState(null, "", window.location.href);
+    };
+
     window.addEventListener("beforeunload", handleExit);
+    window.history.pushState(null, "", window.location.href);
+    window.addEventListener("popstate", disableBack);
 
     return () => {
-      window.removeEventListener("beforeunload", handleExit);
+        window.removeEventListener("beforeunload", handleExit);
+        window.removeEventListener("popstate", disableBack);
     };
   }, []);
 
@@ -130,7 +138,30 @@ const SinglePlayerGame = () => {
 
   const quitGame = async () => {
     await cancelGame();
-    navigate("/");
+    
+    window.history.pushState(null, "", "/");
+    window.history.pushState(null, "", "/"); // Push twice to trap back
+    
+    navigate("/", { replace: true });
+
+    setTimeout(() => {
+        window.addEventListener("popstate", function preventBack() {
+            window.history.pushState(null, "", "/");
+        });
+    }, 0);
+  };
+
+  const goBackToHome = () => {
+    window.history.pushState(null, "", "/");
+    window.history.pushState(null, "", "/");
+    
+    navigate("/", { replace: true });
+
+    setTimeout(() => {
+        window.addEventListener("popstate", function preventBack() {
+            window.history.pushState(null, "", "/");
+        });
+    }, 0);
   };
 
   const restartGame = () => {
@@ -147,11 +178,12 @@ const SinglePlayerGame = () => {
     startGame();
   };
 
-  if (!questions.length) return <Loading />;
+  if (!questions.length) return <Loading color="#007bff" />;
+
   return (
     <div className="flex flex-col items-center relative justify-center min-h-screen">
       <div className="absolute top-0 left-0 w-[100vw] h-[100vh]">
-        <div className="wave"></div>
+        <OtherMatrixRain/>
       </div>
       {!gameOver && !gameCanceled ? (
         <>
@@ -176,8 +208,8 @@ const SinglePlayerGame = () => {
 
             {/* Timer Bar */}
 
-            <div className="bg-blue-600 rounded-3xl text-white w-[480px] flex flex-col justify-center items-center text-4xl shadow-2xl">
-              <div className="w-full flex justify-between items-center px-6 py-6 shadow-2xl shadow-blue-700">
+            <div className={`${answerFeedback === 'correct' ? 'bg-green-400' : answerFeedback === 'incorrect' ? 'bg-red-400' : 'bg-blue-600'} rounded-3xl text-white w-[480px] flex flex-col justify-center items-center text-4xl shadow-2xl`}>
+              <div className={`w-full flex justify-between items-center px-6 py-6 shadow-2xl ${answerFeedback === 'correct' ? 'shadow-green-500' : answerFeedback === 'incorrect' ? 'shadow-red-500' : 'shadow-blue-700'}`}>
                 <span className="font-[extra-light] text-[24px]">Solve:</span>
                 <div className="flex justify-center items-center">
                   <div className="w-[4px] h-[10px] bg-white"></div>
@@ -191,7 +223,7 @@ const SinglePlayerGame = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full flex justify-center items-center font-[extra-light] px-6 pt-10 pb-12 text-3xl">
+              <div className="w-full flex justify-center items-center font-[extra-light] px-6 pt-9 pb-12 text-3xl">
                 {questions[currentQuestionIndex]?.question ? (
                   <BlockMath math={questions[currentQuestionIndex].question} />
                 ) : (
@@ -203,25 +235,24 @@ const SinglePlayerGame = () => {
             </div>
             <div className="spacer-xs"></div>
             <div className="spacer-small"></div>
-            <div className="w-[480px] bg-gradient-to-b from-blue-100 via-white to-blue-100 shadow-2xl rounded-3xl p-6 relative">
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 flex justify-center items-center z-20">
-                <div className="w-[10px] h-[10px] border-[1px] rounded-tl-[4px] rounded-bl-[4px] shadow-sm bg-gradient-to-b from-blue-200 to-white"></div>
-                <div className="w-[30px] h-[40px] border-[1px] rounded-tl-[4px] rounded-bl-[4px] shadow-md bg-gradient-to-b from-gray-200 to-white"></div>
-                <div className="w-[40px] h-[46px] rounded-[4px] border-[1px] border-gray-200 shadow-md bg-gradient-to-b from-gray-200 to-white"></div>
-                <div className="w-[30px] h-[40px] border-[1px] rounded-tr-[4px] rounded-br-[4px] shadow-md bg-gradient-to-b from-gray-200 to-white"></div>
-                <div className="w-[10px] h-[10px] rounded-tr-[4px] rounded-br-[4px] shadow-sm bg-gradient-to-b from-blue-200 to-white"></div>
+            <div className="w-[480px] bg-gradient-to-b from-white via-white to-blue-100/80 shadow-2xl rounded-3xl p-6 relative border-[1px] border-blue-500">
+              <div className="absolute -top-[34px] left-1/2 transform -translate-x-1/2 flex justify-center items-center -z-10">
+                <div className="w-[14px] h-[10px] rounded-tl-[4px] rounded-bl-[4px] shadow-sm bg-gradient-to-b from-white to-white"></div>
+                <div className="w-[30px] h-[40px] border-[1px] border-[1px] border-gray-100 rounded-tl-[4px] rounded-bl-[4px] shadow-md bg-gradient-to-t from-white to-white"></div>
+                <div className="w-[40px] h-[46px] rounded-[4px] shadow-lg bg-gradient-to-t from-white to-white"></div>
+                <div className="w-[30px] h-[40px] border-[1px] border-[1px] border-gray-100 rounded-tr-[4px] rounded-br-[4px] shadow-md bg-gradient-to-t from-white to-white"></div>
+                <div className="w-[14px] h-[10px] rounded-tr-[4px] rounded-br-[4px] shadow-sm bg-gradient-to-b from-white to-white"></div>
               </div>
               <div className="spacer-small"></div>
-              <div className="w-full h-[fit-content] flex justify-between items-center px-4">
-                <div className="flex justify-center items-end gap-6">
+              <div className="w-full flex justify-between items-center px-4">
+                <div className="w-full flex justify-between items-center gap-6">
                   <div
-                    className="flex flex-col items-center gap-4"
+                    className="flex flex-col items-center gap-2"
                     onClick={() => quitGame()}
                   >
-                    <div className="cursor-pointer w-[40px] h-[40px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg] shadow-md"></div>
-                  </div>
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="cursor-pointer w-[40px] h-[40px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] transform -rotate-[30deg] shadow-md"></div>
+                    
+                    <div className="cursor-pointer w-[40px] h-[40px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] shadow-md"></div>
+                    <span className="font-[mighty] text-blue-900 tracking-wider">Quit</span>
                   </div>
                 </div>
               </div>
@@ -233,13 +264,13 @@ const SinglePlayerGame = () => {
                   onClick={() =>
                     submitAnswer(questions[currentQuestionIndex]?.options[0])
                   }
-                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
                     selectedAnswer ===
                     questions[currentQuestionIndex]?.options[0]
                       ? answerFeedback === "correct"
                         ? "bg-green-400 text-white"
                         : "bg-red-400 text-white"
-                      : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                      : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                   }`}
                   disabled={selectedAnswer !== null}
                 >
@@ -251,13 +282,13 @@ const SinglePlayerGame = () => {
                     onClick={() =>
                       submitAnswer(questions[currentQuestionIndex]?.options[1])
                     }
-                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
                       selectedAnswer ===
                       questions[currentQuestionIndex]?.options[1]
                         ? answerFeedback === "correct"
                           ? "bg-green-400 text-white"
                           : "bg-red-400 text-white"
-                        : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                        : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                     }`}
                     disabled={selectedAnswer !== null}
                   >
@@ -268,13 +299,13 @@ const SinglePlayerGame = () => {
                     onClick={() =>
                       submitAnswer(questions[currentQuestionIndex]?.options[2])
                     }
-                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
                       selectedAnswer ===
                       questions[currentQuestionIndex]?.options[2]
                         ? answerFeedback === "correct"
                           ? "bg-green-400 text-white"
                           : "bg-red-400 text-white"
-                        : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                        : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                     }`}
                     disabled={selectedAnswer !== null}
                   >
@@ -286,13 +317,13 @@ const SinglePlayerGame = () => {
                   onClick={() =>
                     submitAnswer(questions[currentQuestionIndex]?.options[3])
                   }
-                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-md shadow-blue-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
+                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-blue-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
                     selectedAnswer ===
                     questions[currentQuestionIndex]?.options[3]
                       ? answerFeedback === "correct"
                         ? "bg-green-400 text-white"
                         : "bg-red-400 text-white"
-                      : "bg-white border-gray-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
+                      : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
                   }`}
                   disabled={selectedAnswer !== null}
                 >
@@ -343,10 +374,10 @@ const SinglePlayerGame = () => {
               Restart
             </button>
             <button
-              onClick={() => navigate("/")}
+              onClick={goBackToHome}
               className="bg-gray-500 text-white py-3 px-6 shadow-md hover:bg-gray-600"
             >
-              Go back to Home
+              Go back to home
             </button>
           </div>
         </div>

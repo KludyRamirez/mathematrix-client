@@ -8,7 +8,6 @@ import {
   BsClockHistory,
   BsController,
   BsFilter,
-  BsSearch,
   BsTrophy,
 } from "react-icons/bs";
 import controller from "../assets/images/controller.png";
@@ -19,11 +18,12 @@ import { Link } from "react-router-dom";
 import StarsCanvas from "../components/StarsCanvas";
 
 import crown from "../assets/images/crown.png";
-import silvertrophy from "../assets/images/silver-trophy.png";
+import lock from "../assets/images/lock.png";
 import rationalfunctions from "../assets/images/rational-functions-thumbnail.jpg";
 import rationalinequalities from "../assets/images/rational-inequalities-thumbnail.jpg";
 
 import { BsYoutube } from "react-icons/bs";
+import OtherMatrixRain from "../utils/OtherMatrixRain";
 
 const lectures = [
   {
@@ -57,6 +57,20 @@ const HomePage = () => {
   const [videoLink, setVideoLink] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [active, setActive] = useState("");
+
+  useEffect(() => {
+    window.history.replaceState(null, "", window.location.pathname);
+
+    const disableBack = () => {
+        window.history.pushState(null, "", window.location.pathname);
+    };
+
+    window.addEventListener("popstate", disableBack);
+
+    return () => {
+        window.removeEventListener("popstate", disableBack);
+    };
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -131,14 +145,14 @@ const HomePage = () => {
             </div>
             <div className="flex justify-end items-center gap-8">
               <div
-                className="cursor-pointer pl-2 pr-5 py-2 flex justify-center items-center border-[1px] border-gray-300 rounded-[48px] gap-4 group hover:bg-blue-500 hover:border-blue-500"
+                className="cursor-pointer pl-2 pr-5 py-2 flex justify-center items-center border-[1px] border-gray-300 rounded-[48px] gap-4 group hover:bg-blue-500 hover:border-blue-500 bg-white"
                 onClick={() => handleLogout()}
               >
                 <div className="font-[vip-bold] flex justify-center items-center w-[50px] h-[50px] font-[mighty] text-white group-hover:text-blue-600 group-hover:bg-white text-2xl rounded-[50%] bg-blue-500">
                   {user.username.slice(0, 1).toUpperCase()}
                 </div>
-                <span className="font-[semi-bold] text-[22px] group-hover:text-white">
-                  Sign out
+                <span className="font-[vip-bold] text-[22px] text-blue-900 group-hover:text-white">
+                  Log out
                 </span>
               </div>
             </div>
@@ -256,7 +270,7 @@ const HomePage = () => {
           <div
             className={`${
               active === "Lectures" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
+            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-[#efffff]`}
           >
             <div className="w-full flex justify-between items-center px-8 ">
               <span className="text-[38px] font-[vip-regular] text-blue-600">
@@ -271,8 +285,8 @@ const HomePage = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <BsFilter
-                  size={32}
-                  className="absolute top-2 right-3 text-blue-300"
+                  size={28}
+                  className="absolute top-[10px] right-3 text-blue-300"
                 />
               </div>
             </div>
@@ -364,20 +378,20 @@ const HomePage = () => {
                     className="w-full flex items-center justify-center relative leading-none gap-8 py-14 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-[192px]">
-                      <div className="wave"></div>
+                      <OtherMatrixRain/>
                     </div>
                     <img
                       src={crown}
                       alt=""
-                      className="w-[90px] -mt-[12px] z-20"
+                      className="w-[90px] -mt-[16px] z-20"
                     />
-                    <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block z-20">
+                    <span className="whitespace-nowrap font-[vip-bold] text-[72px] text-yellow-600 inline-block z-20">
                       {index + 1}st
                     </span>
-                    <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[72px] text-yellow-950 pt-2 inline-block z-20">
+                    <span className="whitespace-nowrap text-center font-[vip-bold] text-[72px] text-yellow-950 pt-2 inline-block z-20">
                       {player._id}
                     </span>
-                    <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block z-20">
+                    <span className="whitespace-nowrap font-[vip-bold] text-[72px] text-blue-950 inline-block z-20">
                       {player.elo}
                     </span>
                   </div>
@@ -439,7 +453,7 @@ const HomePage = () => {
                             key={player._id}
                             className={`text-[20px] ${
                               index % 2 === 0
-                                ? "bg-blue-100/30"
+                                ? "bg-[#efffff]"
                                 : "bg-transparent"
                             }`}
                           >
@@ -493,24 +507,19 @@ const HomePage = () => {
                 <div className="w-full flex flex-col justify-center items-center px-8">
                   {matchHistory.slice(0, 1).map((match, index) => (
                     <div
-                      key={match._id}
+                      key={index}
                       className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
                     >
                       <div className="absolute top-0 left-0 w-full h-[192px]">
-                        <div className="metal-wave"></div>
+                        <OtherMatrixRain/>
                       </div>
-                      <img
-                        src={silvertrophy}
-                        alt=""
-                        className="w-[90px] -mt-[12px] z-20"
-                      />
-                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-yellow-600 inline-block z-20">
+                      <span className="whitespace-nowrap font-[vip-bold] text-[56px] text-yellow-600 inline-block z-20">
                         {new Date(match.date).toLocaleDateString()}
                       </span>
-                      <span className="whitespace-nowrap text-center font-[mighty] tracking-wider text-[72px] text-yellow-950 pt-2 inline-block z-20">
+                      <span className="whitespace-nowrap text-center font-[vip-bold] text-[56px] text-blue-600 pt-2 inline-block z-20">
                         {match.mode}
                       </span>
-                      <span className="whitespace-nowrap font-[mighty] text-[72px] text-blue-950 inline-block z-20">
+                      <span className="whitespace-nowrap font-[vip-bold] text-[56px] text-blue-950 inline-block z-20">
                         {match.result}
                       </span>
                     </div>
@@ -545,7 +554,7 @@ const HomePage = () => {
                             key={index}
                             className={`text-[20px] ${
                               index % 2 === 0
-                                ? "bg-blue-100/30"
+                                ? "bg-[#efffff]"
                                 : "bg-transparent"
                             }`}
                           >
@@ -592,82 +601,6 @@ const HomePage = () => {
           </div>
           <div className="spacer-medium"></div>
           <div className="spacer-medium"></div>
-
-          {/* <div className="w-full flex justify-start items-center py-20">
-            <div className="flex flex-col gap-8 items-start">
-              <Link to="/admin">
-                <div className="cursor-pointer text-5xl text-gray-800 font-[vip-bold] hover:text-blue-600 skew-y-6 hover:skew-y-0">
-                  Admin
-                </div>
-              </Link>
-              <div
-                className="flex gap-8 items-center cursor-pointer text-5xl text-gray-800 font-[vip-bold] hover:text-red-600 skew-y-6 hover:skew-y-0"
-                onClick={handleLogout}
-              >
-                <span>Sign out</span>
-              </div>
-            </div>
-          </div> */}
-          {/* {active === "Lectures" && (
-            <div className="w-[666px] h-[612px] flex flex-wrap justify-start items-start">
-              <span className="text-[32px] text-blue-700 px-4">
-                Lecture Links
-              </span>
-            </div>
-          )}
-          {active === "Leaderboards" && (
-            
-          )}
-          {active === "History" && (
-            <div className="w-[666px] h-[612px] flex flex-col justify-start items-start">
-              <span className="text-[32px] text-gray-700">Match History</span>
-
-              <div className="spacer-small"></div>
-              <div className="w-full h-[600px] bg-gray-700 p-4 rounded-lg shadow-lg overflow-auto">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="border-b border-gray-500">
-                      <th className="p-2">Date</th>
-                      <th className="p-2">Type</th>
-                      <th className="p-2">Result</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {matchHistory.length > 0 ? (
-                      matchHistory.map((match, index) => (
-                        <tr key={index} className="border-gray-600">
-                          <td className="p-2">
-                            {new Date(match.date).toLocaleDateString()}
-                          </td>
-                          <td className="p-2">{match.mode}</td>
-                          <td
-                            className={`p-2 font-semibold ${
-                              match.result === "Win"
-                                ? "text-green-400"
-                                : match.result === "Loss"
-                                ? "text-red-400"
-                                : "text-gray-400"
-                            }`}
-                          >
-                            {match.result}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan="3"
-                          className="p-2 text-center text-gray-400"
-                        >
-                          No match history found.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )} */}
         </div>
       </div>
     </>

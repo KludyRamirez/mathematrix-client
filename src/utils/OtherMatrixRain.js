@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-const MatrixRain = () => {
+const OtherMatrixRain = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const MatrixRain = () => {
     const matrix = () => {
       if (frame % 7 === 0) {
         // Slow down effect
-        ctx.fillStyle = "#0001";
+        ctx.fillStyle = "#EFF1";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.font = "15pt monospace";
@@ -32,7 +32,7 @@ const MatrixRain = () => {
           const text = String.fromCharCode(Math.random() * 128);
           const x = ind * 20;
 
-          ctx.fillStyle = Math.random() > 0.5 ? "#00f" : "#fff"; // Randomly choose blue or white
+          ctx.fillStyle = Math.random() > 0.5 ? "#00f" : "#fff";
           ctx.fillText(text, x, y);
 
           ypos[ind] = y > 100 + Math.random() * 10000 ? 0 : y + 20;
@@ -51,8 +51,8 @@ const MatrixRain = () => {
   }, []);
 
   return (
-    <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full" />
+    <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-10 object-cover" />
   );
 };
 
-export default MatrixRain;
+export default OtherMatrixRain;

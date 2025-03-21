@@ -1,31 +1,48 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import io from "socket.io-client";
+import Loading from "./Loading";
 
-const socket = io(process.env.REACT_APP_SOCKET_API);
-
-const MultiPlayerGame = () => {
+const MultiPlayerGame = ({ socket }) => {
   const { matchId } = useParams();
   const [question, setQuestion] = useState(null);
   const [timeLeft, setTimeLeft] = useState(180);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [gameOverData, setGameOverData] = useState(null);
+  const [loading, setLoading] = useState(true); // ⏳ Loading state
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!socket) return;
+
+    socket.on("connect", () => {
+      console.log("✅ Connected to WebSocket:", socket.id);
+    });
+
     socket.on("new_question", (data) => {
+      console.log("📥 Received question:", data);
+
+      if (!data || !data.question) {
+        console.error("❌ Invalid question data received:", data);
+        return;
+      }
+
       setQuestion(data.question);
       setTimeLeft(180);
       setSelectedAnswer(null);
+      setLoading(false); // ✅ Stop loading when question arrives
     });
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+    return () => {
+      console.log("🛑 Cleaning up socket listener...");
+      clearInterval(timer);
+      socket.off("new_question");
+    };
+  }, [socket]);
 
   useEffect(() => {
     socket.on("game_over", ({ winner, scores, answers, message }) => {
@@ -43,9 +60,11 @@ const MultiPlayerGame = () => {
 
   return (
     <div>
-      {question ? (
+      {loading ? (
+        <Loading color="#007bff" />
+      ) : question ? (
         <>
-          <h3>{question.text}</h3>
+          <h3>{question.question}</h3>
           {question.options.map((option) => (
             <button
               key={option}
