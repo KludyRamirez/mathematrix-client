@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -6,9 +6,17 @@ import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css";
 import Loading from "../components/Loading";
 import OtherMatrixRain from "../utils/OtherMatrixRain";
+import logo from "../assets/images/logo.png";
+import snowflake from "../assets/images/snowflake.png";
+import hourglass from "../assets/images/hourglass.png";
+import MatrixRain from "../utils/MatrixRain";
+import { FaArrowRotateLeft } from "react-icons/fa6";
+import { BsHouse } from "react-icons/bs";
 
 const SinglePlayerGame = () => {
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   const [gameId, setGameId] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -19,52 +27,67 @@ const SinglePlayerGame = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [answerFeedback, setAnswerFeedback] = useState(null);
   const [gameCanceled, setGameCanceled] = useState(false);
+  const [powerUps, setPowerUps] = useState([]);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const navigate = useNavigate();
+  const timerInterval = useRef(null);
 
   useEffect(() => {
     startGame();
 
     const handleExit = async () => {
-      if (!gameOver && gameId) {
-          await cancelGame();
-      }
+      if (!gameOver && gameId) await cancelGame();
     };
 
     const disableBack = () => {
-        window.history.pushState(null, "", window.location.href);
+      window.history.pushState(null, "", window.location.pathname);
     };
 
-    window.addEventListener("beforeunload", handleExit);
-    window.history.pushState(null, "", window.location.href);
+    window.history.pushState(null, "", window.location.pathname);
     window.addEventListener("popstate", disableBack);
+    window.addEventListener("beforeunload", handleExit);
 
     return () => {
-        window.removeEventListener("beforeunload", handleExit);
-        window.removeEventListener("popstate", disableBack);
+      window.removeEventListener("popstate", disableBack);
+      window.removeEventListener("beforeunload", handleExit);
+      clearInterval(timerInterval.current);
     };
   }, []);
 
   useEffect(() => {
-    if (timer === 0) {
-      endGame();
+    if (timer === 0) endGame();
+
+    if (!isPaused) {
+      timerInterval.current = setInterval(() => {
+        setTimer((prev) => Math.max(prev - 1, 0));
+      }, 1000);
     }
 
-    const interval = setInterval(() => {
-      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
+    return () => clearInterval(timerInterval.current);
+  }, [timer, isPaused]);
 
-    return () => clearInterval(interval);
-  }, [timer]);
+  useEffect(() => {
+    if (powerUps.length < 2) {
+      const spawnTime = Math.random() * (15000 - 5000) + 5000;
+      const powerUpType = Math.random() > 0.5 ? "extra_time" : "freeze_time";
+
+      const spawnPowerUp = () => {
+        setPowerUps((prev) => [...prev, { id: Date.now(), type: powerUpType }]);
+      };
+
+      const powerUpTimeout = setTimeout(spawnPowerUp, spawnTime);
+      return () => clearTimeout(powerUpTimeout);
+    }
+  }, [powerUps]);
 
   const startGame = async () => {
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/singleplayer/start`,
         { username: user.username }
       );
-      setGameId(response.data.gameId);
-      setQuestions(response.data.questions);
+      setGameId(data.gameId);
+      setQuestions(data.questions);
     } catch (error) {
       console.error("Error starting game:", error);
     }
@@ -75,16 +98,12 @@ const SinglePlayerGame = () => {
 
     setSelectedAnswer(answer);
     try {
-      const response = await axios.post(
+      const { data } = await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/singleplayer/answer`,
-        {
-          gameId,
-          questionIndex: currentQuestionIndex,
-          answer,
-        }
+        { gameId, questionIndex: currentQuestionIndex, answer }
       );
 
-      if (response.data.correct) {
+      if (data.correct) {
         setCorrectAnswers((prev) => prev + 1);
         setAnswerFeedback("correct");
       } else {
@@ -111,24 +130,37 @@ const SinglePlayerGame = () => {
     try {
       await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/singleplayer/end`,
-        {
-          gameId,
-        }
+        { gameId }
       );
-
       setGameOver(true);
     } catch (error) {
       console.error("Error ending game:", error);
     }
   };
 
+  const handlePowerUp = (id, type) => {
+    if (type === "extra_time") {
+      setTimer((prev) => prev + 30);
+    } else if (type === "freeze_time") {
+      setIsPaused(true);
+      clearInterval(timerInterval.current);
+
+      setTimeout(() => {
+        setIsPaused(false);
+        timerInterval.current = setInterval(() => {
+          setTimer((prev) => Math.max(prev - 1, 0));
+        }, 1000);
+      }, 60000);
+    }
+
+    setPowerUps((prev) => prev.filter((powerUp) => powerUp.id !== id));
+  };
+
   const cancelGame = async () => {
     try {
       await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/singleplayer/cancel`,
-        {
-          gameId,
-        }
+        { gameId }
       );
       setGameCanceled(true);
     } catch (error) {
@@ -138,29 +170,22 @@ const SinglePlayerGame = () => {
 
   const quitGame = async () => {
     await cancelGame();
-    
-    window.history.pushState(null, "", "/");
-    window.history.pushState(null, "", "/"); // Push twice to trap back
-    
     navigate("/", { replace: true });
 
     setTimeout(() => {
-        window.addEventListener("popstate", function preventBack() {
-            window.history.pushState(null, "", "/");
-        });
+      window.addEventListener("popstate", () => {
+        window.history.pushState(null, "", "/");
+      });
     }, 0);
   };
 
   const goBackToHome = () => {
-    window.history.pushState(null, "", "/");
-    window.history.pushState(null, "", "/");
-    
     navigate("/", { replace: true });
 
     setTimeout(() => {
-        window.addEventListener("popstate", function preventBack() {
-            window.history.pushState(null, "", "/");
-        });
+      window.addEventListener("popstate", () => {
+        window.history.pushState(null, "", "/");
+      });
     }, 0);
   };
 
@@ -175,170 +200,171 @@ const SinglePlayerGame = () => {
     setSelectedAnswer(null);
     setAnswerFeedback(null);
     setGameCanceled(false);
+    setPowerUps([]);
+    setIsPaused(false);
+    clearInterval(timerInterval.current);
+
+    timerInterval.current = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
     startGame();
   };
 
   if (!questions.length) return <Loading color="#007bff" />;
 
   return (
-    <div className="flex flex-col items-center relative justify-center min-h-screen">
-      <div className="absolute top-0 left-0 w-[100vw] h-[100vh]">
-        <OtherMatrixRain/>
+    <div className="flex flex-col items-center relative justify-center w-full h-screen">
+      <div className="absolute top-8 left-8 w-[100px] h-[100px] z-20 hidden xl:block shadow-3xl rounded-[50%]">
+        <img src={logo} alt="" className="w-full h-full" />
+      </div>
+      <div className="absolute top-0 left-0 w-full h-full z-10 block shadow-2xl rounded-[50%] border border-blue-500">
+        {gameOver ? (
+          <div className="metal-wave"></div>
+        ) : (
+          <div className="wave"></div>
+        )}
       </div>
       {!gameOver && !gameCanceled ? (
         <>
-          <div className="relative z-20 flex flex-col items-center justify-center">
-            {/* <div className="w-full p-4 bg-gradient-to-b from-blue-100 via-white to-blue-100 flex justify-center items-center shadow-2xl rounded-2xl">
-              <div className="font-[mighty] text-6xl text-blue-950">
-                Single Player
-              </div>
+          <div className="relative w-full xl:w-[fit-content] h-full">
+            <div className="absolute top-0 left-0 w-full h-full">
+              <OtherMatrixRain />
             </div>
-            <div className="spacer-medium" /> */}
-            {/* <div className="mb-6">{questions[currentQuestionIndex]?.category}</div> */}
+            <div className="relative z-20 flex flex-col items-center justify-start xl:justify-center h-full px-4 xl:px-20 backdrop-blur-sm xl:border-l xl:border-r border-blue-200 relative py-8 xl:py-0">
+              <div
+                onClick={() => quitGame()}
+                className="cursor-pointer absolute top-1 xl:top-[220px] right-6 xl:-right-[140px] w-[70px] xl:w-[100px] h-[70px] xl:h-[100px] flex justify-center items-center xl:border-[1px] border-red-400 rounded-[50%] font-[tarrgethalfital] text-[26px] xl:bg-gradient-to-br from-red-400 via-red-600 to-red-500 text-red-600 xl:text-white xl:shadow-2xl"
+              >
+                <span className="mr-2">Quit</span>
+              </div>
+              {/* <div className="absolute top-[220px] -left-[140px] flex flex-col justify-start items-center gap-6">
+                {powerUps.map((powerUp) => (
+                  <button
+                    key={powerUp.id}
+                    onClick={() => handlePowerUp(powerUp.id, powerUp.type)}
+                    className="w-[100px] h-[100px] flex justify-center items-center border-[1px] border-blue-300 rounded-[50%] bg-gradient-to-tl from-red-300 via-blue-500 via-blue-400 via-blue-300 to-[#efffff] shadow-2xl"
+                  >
+                    {powerUp.type === "extra_time" ? (
+                      <img
+                        src={hourglass}
+                        alt=""
+                        className="w-[70px] h-[70px]"
+                      />
+                    ) : (
+                      <img
+                        src={snowflake}
+                        alt=""
+                        className="w-[70px] h-[70px]"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div> */}
+              <div className="w-full hidden xl:flex justify-center items-center">
+                <div
+                  className={`font-[tarrgethalfital] text-6xl text-blue-700 w-[120px] h-[120px] border-[1px] border-blue-400 rounded-[50%] flex justify-center items-center bg-gradient-to-b from-red-100 via-white to-[#efffff] shadow-lg ${
+                    answerFeedback === null ? "block" : "hidden"
+                  }`}
+                >
+                  <span className="mr-5">1p</span>
+                </div>
+                <div
+                  className={`font-[tarrgethalfital] text-6xl text-green-600 ${
+                    answerFeedback === "correct" ? "block" : "hidden"
+                  }`}
+                >
+                  Correct
+                </div>
+                <div
+                  className={`font-[tarrgethalfital] text-6xl text-red-600 ${
+                    answerFeedback === "incorrect" ? "block" : "hidden"
+                  }`}
+                >
+                  Wrong
+                </div>
+              </div>
+              <div className="spacer-medium" />
+              <div className="w-full flex justify-center items-center gap-2 relative">
+                <span className="text-[56px] font-[tarrget3d] text-blue-900">
+                  {Math.floor(timer / 60)}:{timer % 60 < 10 ? "0" : ""}
+                  {timer % 60}
+                </span>
+              </div>
+              <div className="spacer-medium" />
 
-            {/* <span className="text-[72px] font-semibold">
-            {Math.floor(timer / 60)}:{timer % 60 < 10 ? "0" : ""}
-            {timer % 60}
-          </span> */}
-
-            {/* Question Display */}
-            {/* <h3 className="text-xl font-[extra-light] my-6">
-            Question {currentQuestionIndex + 1}
-          </h3> */}
-
-            {/* Timer Bar */}
-
-            <div className={`${answerFeedback === 'correct' ? 'bg-green-400' : answerFeedback === 'incorrect' ? 'bg-red-400' : 'bg-blue-600'} rounded-3xl text-white w-[480px] flex flex-col justify-center items-center text-4xl shadow-2xl`}>
-              <div className={`w-full flex justify-between items-center px-6 py-6 shadow-2xl ${answerFeedback === 'correct' ? 'shadow-green-500' : answerFeedback === 'incorrect' ? 'shadow-red-500' : 'shadow-blue-700'}`}>
-                <span className="font-[extra-light] text-[24px]">Solve:</span>
-                <div className="flex justify-center items-center">
-                  <div className="w-[4px] h-[10px] bg-white"></div>
-                  <div className="w-[26px] h-[18px] border-[2px] border-white">
-                    <div className="w-full bg-blue-500 overflow-hidden transform scale-x-[-1]">
-                      <div
-                        className="h-[14px] bg-white transition-all duration-500"
-                        style={{ width: `${(timer / 900) * 100}%` }}
-                      ></div>
+              <div
+                className={`${
+                  answerFeedback === "correct"
+                    ? "bg-green-400"
+                    : answerFeedback === "incorrect"
+                    ? "bg-red-400"
+                    : "bg-blue-600"
+                } rounded-3xl text-white w-full xl:w-[480px] flex flex-col justify-center items-center text-4xl shadow-2xl`}
+              >
+                <div
+                  className={`w-full flex justify-between items-center px-6 py-6 shadow-2xl rounded-tl-3xl rounded-tr-3xl ${
+                    answerFeedback === "correct"
+                      ? "shadow-green-500"
+                      : answerFeedback === "incorrect"
+                      ? "shadow-red-500"
+                      : "shadow-blue-700"
+                  }`}
+                >
+                  <span className="font-[extra-light] text-[24px]">Solve:</span>
+                  <div className="flex justify-center items-center">
+                    <div className="w-[4px] h-[10px] bg-white"></div>
+                    <div className="w-[26px] h-[18px] border-[2px] border-white">
+                      <div className="w-full bg-blue-500 overflow-hidden transform scale-x-[-1]">
+                        <div
+                          className="h-[14px] bg-white transition-all duration-500"
+                          style={{ width: `${(timer / 900) * 100}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div className="w-full flex justify-center items-center font-[extra-light] px-6 pt-9 pb-12 text-3xl">
+                  {questions[currentQuestionIndex]?.question ? (
+                    <BlockMath
+                      math={questions[currentQuestionIndex].question}
+                    />
+                  ) : (
+                    <span className="font-[mighty]">
+                      You have finished the game!
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="w-full flex justify-center items-center font-[extra-light] px-6 pt-9 pb-12 text-3xl">
-                {questions[currentQuestionIndex]?.question ? (
-                  <BlockMath math={questions[currentQuestionIndex].question} />
-                ) : (
-                  <span className="font-[mighty]">
-                    You have finished the game!
-                  </span>
+              <div className="spacer-small"></div>
+              <div className="spacer-medium"></div>
+              <div className="w-full xl:w-[480px] flex flex-wrap justify-center items-center gap-4">
+                {questions[currentQuestionIndex]?.options.map(
+                  (option, index) => (
+                    <div
+                      key={index}
+                      onClick={() => submitAnswer(option)}
+                      className={`w-[47%] h-[74px] rounded-lg flex justify-center items-center xl:w-[230px] xl:py-6 px-6 shadow-xl xl:rounded-xl text-center border-[1px] text-[16px] cursor-pointer transition-hover duration-300 
+                          ${
+                            selectedAnswer === option
+                              ? answerFeedback === "correct"
+                                ? "bg-gradient-to-b from-green-400 to-green-500 border-green-400 text-white"
+                                : "bg-gradient-to-b from-red-400 to-red-500 border-red-400 text-white"
+                              : "bg-gradient-to-b from-white via-white via-blue-100 via-blue-100 to-red-100 border-blue-400 hover:border-blue-500 hover:from-blue-500 hover:to-blue-600 hover:text-white"
+                          }`}
+                      disabled={selectedAnswer !== null}
+                    >
+                      {option}
+                    </div>
+                  )
                 )}
               </div>
-            </div>
-            <div className="spacer-xs"></div>
-            <div className="spacer-small"></div>
-            <div className="w-[480px] bg-gradient-to-b from-white via-white to-blue-100/80 shadow-2xl rounded-3xl p-6 relative border-[1px] border-blue-500">
-              <div className="absolute -top-[34px] left-1/2 transform -translate-x-1/2 flex justify-center items-center -z-10">
-                <div className="w-[14px] h-[10px] rounded-tl-[4px] rounded-bl-[4px] shadow-sm bg-gradient-to-b from-white to-white"></div>
-                <div className="w-[30px] h-[40px] border-[1px] border-[1px] border-gray-100 rounded-tl-[4px] rounded-bl-[4px] shadow-md bg-gradient-to-t from-white to-white"></div>
-                <div className="w-[40px] h-[46px] rounded-[4px] shadow-lg bg-gradient-to-t from-white to-white"></div>
-                <div className="w-[30px] h-[40px] border-[1px] border-[1px] border-gray-100 rounded-tr-[4px] rounded-br-[4px] shadow-md bg-gradient-to-t from-white to-white"></div>
-                <div className="w-[14px] h-[10px] rounded-tr-[4px] rounded-br-[4px] shadow-sm bg-gradient-to-b from-white to-white"></div>
-              </div>
-              <div className="spacer-small"></div>
-              <div className="w-full flex justify-between items-center px-4">
-                <div className="w-full flex justify-between items-center gap-6">
-                  <div
-                    className="flex flex-col items-center gap-2"
-                    onClick={() => quitGame()}
-                  >
-                    
-                    <div className="cursor-pointer w-[40px] h-[40px] rounded-[50%] shadow-md bg-gradient-to-b from-[#ff4f88] to-[#9a2257] shadow-md"></div>
-                    <span className="font-[mighty] text-blue-900 tracking-wider">Quit</span>
-                  </div>
-                </div>
-              </div>
-              <div className="spacer-xs"></div>
-              <div className="spacer-small"></div>
-
-              <div className="w-full h-[fit-content] flex flex-col justify-center items-center gap-4">
-                <div
-                  onClick={() =>
-                    submitAnswer(questions[currentQuestionIndex]?.options[0])
-                  }
-                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
-                    selectedAnswer ===
-                    questions[currentQuestionIndex]?.options[0]
-                      ? answerFeedback === "correct"
-                        ? "bg-green-400 text-white"
-                        : "bg-red-400 text-white"
-                      : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
-                  }`}
-                  disabled={selectedAnswer !== null}
-                >
-                  {questions[currentQuestionIndex]?.options[0]}
-                </div>
-
-                <div className="w-full flex justify-center items-center gap-4">
-                  <div
-                    onClick={() =>
-                      submitAnswer(questions[currentQuestionIndex]?.options[1])
-                    }
-                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
-                      selectedAnswer ===
-                      questions[currentQuestionIndex]?.options[1]
-                        ? answerFeedback === "correct"
-                          ? "bg-green-400 text-white"
-                          : "bg-red-400 text-white"
-                        : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
-                    }`}
-                    disabled={selectedAnswer !== null}
-                  >
-                    {questions[currentQuestionIndex]?.options[1]}
-                  </div>
-
-                  <div
-                    onClick={() =>
-                      submitAnswer(questions[currentQuestionIndex]?.options[2])
-                    }
-                    className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-gray-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
-                      selectedAnswer ===
-                      questions[currentQuestionIndex]?.options[2]
-                        ? answerFeedback === "correct"
-                          ? "bg-green-400 text-white"
-                          : "bg-red-400 text-white"
-                        : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
-                    }`}
-                    disabled={selectedAnswer !== null}
-                  >
-                    {questions[currentQuestionIndex]?.options[2]}
-                  </div>
-                </div>
-
-                <div
-                  onClick={() =>
-                    submitAnswer(questions[currentQuestionIndex]?.options[3])
-                  }
-                  className={`w-[fit-content] min-w-[188px] min-h-[58px] py-4 px-6 shadow-xl shadow-blue-100 rounded-[8px] text-center border-[1px] text-[16px] cursor-pointer transition-all duration-300 ${
-                    selectedAnswer ===
-                    questions[currentQuestionIndex]?.options[3]
-                      ? answerFeedback === "correct"
-                        ? "bg-green-400 text-white"
-                        : "bg-red-400 text-white"
-                      : "bg-white border-blue-300/80 hover:border-blue-500 hover:bg-blue-600 hover:text-white"
-                  }`}
-                  disabled={selectedAnswer !== null}
-                >
-                  {questions[currentQuestionIndex]?.options[3]}
-                </div>
-              </div>
-
-              <div className="spacer-xs"></div>
-              <div className="spacer-small"></div>
             </div>
           </div>
         </>
       ) : (
-        <div className="text-center relative z-20">
-          {gameCanceled ? (
+        <div className="relative w-full md:w-[fit-content] h-full">
+          {/* {gameCanceled ? (
             <h2 className="text-2xl font-bold text-red-500">Game Canceled</h2>
           ) : (
             <>
@@ -363,22 +389,76 @@ const SinglePlayerGame = () => {
                 </div>
               </div>
             </>
-          )}
-          <div className="spacer-medium"></div>
-          <div className="spacer-medium"></div>
-          <div className="flex flex-col gap-4 justify-center">
-            <button
-              onClick={restartGame}
-              className="bg-blue-500 text-white py-3 px-6 shadow-md hover:bg-blue-600"
+          )} */}
+
+          <div className="absolute top-0 left-0 w-full h-full">
+            <MatrixRain />
+          </div>
+          <div className="relative z-20 flex flex-col items-center justify-center h-screen xl:h-full px-4 xl:px-20 backdrop-blur-sm relative py-8 xl:py-0">
+            <div className="w-full flex justify-center items-center">
+              <div
+                className={`font-[tarrgethalfital] text-center mr-5 xl:mr-0 text-7xl xl:text-6xl text-red-500`}
+              >
+                Game Over
+              </div>
+            </div>
+            <div className="spacer-medium" />
+            <div className="spacer-medium" />
+            <div className="spacer-small"></div>
+            <div className="spacer-small"></div>
+
+            <div
+              className={`text-white w-full flex flex-col justify-center items-center`}
             >
-              Restart
-            </button>
-            <button
-              onClick={goBackToHome}
-              className="bg-gray-500 text-white py-3 px-6 shadow-md hover:bg-gray-600"
-            >
-              Go back to home
-            </button>
+              <div className="w-full flex justify-around items-center font-[extra-light] text-3xl">
+                <div className="flex flex-col justify-center items-center gap-6 font-[vip-bold]">
+                  <p className="text-[48px] xl:text-[64px]">{correctAnswers}</p>
+                  <p className="text-xl">Correct</p>
+                </div>
+                <div className="flex flex-col justify-center items-center gap-6 font-[vip-bold]">
+                  <p className="text-[48px] xl:text-[64px]">
+                    {incorrectAnswers}
+                  </p>
+                  <p className="text-xl">Incorrect</p>
+                </div>
+              </div>
+            </div>
+            <div className="spacer-xs"></div>
+            <div className="spacer-small"></div>
+            <div className="spacer-small"></div>
+            <div className="spacer-small"></div>
+            <div className="spacer-medium"></div>
+
+            <div className="cursor-pointer w-full flex flex-col gap-4 justify-center items-center px-4 xl:px-0">
+              {/* Restart Section */}
+              <div
+                onClick={restartGame}
+                className="w-full p-1 flex justify-center items-center gap-2 rounded-xl bg-gradient-to-b from-white to-gray-300 group"
+              >
+                <span className="font-[vip-regular] text-[18px] xl:text-[24px] text-blue-950 pl-4">
+                  Restart
+                </span>
+                <div className="p-4 rounded-[50%] flex justify-center items-center">
+                  <FaArrowRotateLeft
+                    size={24}
+                    className="text-blue-950 group-hover:transform group-hover:rotate-[360deg] transition-hover duration-300"
+                  />
+                </div>
+              </div>
+
+              {/* Home Section */}
+              <div
+                onClick={goBackToHome}
+                className="cursor-pointer w-full p-1 flex justify-center items-center gap-2 bg-red-100/10 border-[1px] border-white rounded-xl hover:bg-red-100/20"
+              >
+                <span className="font-[vip-regular] text-[18px] xl:text-[24px] text-white pl-4">
+                  Home
+                </span>
+                <div className="p-4 rounded-[50%] flex justify-center items-center">
+                  <BsHouse size={24} className="text-white" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

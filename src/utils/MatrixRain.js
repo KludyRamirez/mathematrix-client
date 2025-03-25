@@ -32,7 +32,7 @@ const MatrixRain = () => {
           const text = String.fromCharCode(Math.random() * 128);
           const x = ind * 20;
 
-          ctx.fillStyle = Math.random() > 0.5 ? "#00f" : "#fff";
+          ctx.fillStyle = Math.random() > 0.5 ? "#f00" : "#fff";
           ctx.fillText(text, x, y);
 
           ypos[ind] = y > 100 + Math.random() * 10000 ? 0 : y + 20;
@@ -51,7 +51,10 @@ const MatrixRain = () => {
   }, []);
 
   return (
-    <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-10 object-cover" />
+    <canvas
+      ref={canvasRef}
+      className="absolute top-0 left-0 w-full h-full z-10 object-cover"
+    />
   );
 };
 

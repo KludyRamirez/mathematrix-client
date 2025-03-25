@@ -71,6 +71,31 @@ body {
   src: url("./assets/fonts/Souly.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "tarrgetacad";
+  src: url("./assets/fonts/tarrgetacad.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "tarrgetplatital";
+  src: url("./assets/fonts/tarrgetplatital.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "tarrgethalf";
+  src: url("./assets/fonts/tarrgethalf.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "tarrgethalfital";
+  src: url("./assets/fonts/tarrgethalfital.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "tarrget3d";
+  src: url("./assets/fonts/tarrget3d.ttf") format("truetype");
+}
+
 .spacer-large {
   padding: 60px 0px;
 }
@@ -126,14 +151,14 @@ body {
   width: 100%;
   height: 100%;
 
-  --s: 140px; /* Control the size */
-  --c1: #b3e5fc; /* Soft Sky Blue */
-  --c2: #aedff7; /* Powder Blue */
-  --c3: #cde8f6; /* Light Ice Blue */
-  --c4: #a7d3e7; /* Muted Teal Blue */
+  --s: 140px; /* control the size */
+  --c1: #f0f8ff; /* Softest Powder Blue */
+  --c2: #dbeeff; /* Gentle Cloud Blue */
+  --c3: #f0f8ff; /* Light Pastel Sky Blue */
+  --c4: #efffff; /* Soft Baby Blue */
 
-  --_g: #0000 25%, #0004 47%, var(--c1) 53% 147%, var(--c2) 153% 247%,
-    var(--c3) 253% 347%, var(--c4) 353% 447%, var(--c1) 453% 547%, #0004 553%,
+  --_g: #0000 25%, #00f1 47%, var(--c1) 53% 147%, var(--c2) 153% 247%,
+    var(--c3) 253% 347%, var(--c4) 353% 447%, var(--c1) 453% 547%, #00f1 553%,
     #0000 575%;
   --_s: calc(25% / 3) calc(25% / 4) at 50%;
 
@@ -157,13 +182,13 @@ body {
   height: 100%;
 
   --s: 140px; /* control the size */
-  --c1: #f4c2c2; /* Pastel Pink */
-  --c2: #ffeb99; /* Light Yellow */
-  --c3: #b5ead7; /* Pastel Green */
-  --c4: #a2d5c6; /* Muted Teal */
+  --c1: #f0f8ff; /* Softest Powder Blue */
+  --c2: #dbeeff; /* Gentle Cloud Blue */
+  --c3: #f0f8ff; /* Light Pastel Sky Blue */
+  --c4: #efffff; /* Soft Baby Blue */
 
-  --_g: #0000 25%, #0004 47%, var(--c1) 53% 147%, var(--c2) 153% 247%,
-    var(--c3) 253% 347%, var(--c4) 353% 447%, var(--c1) 453% 547%, #0004 553%,
+  --_g: #0000 25%, #00f2 47%, var(--c1) 53% 147%, var(--c2) 153% 247%,
+    var(--c3) 253% 347%, var(--c4) 353% 447%, var(--c1) 453% 547%, #00f2 553%,
     #0000 575%;
   --_s: calc(25% / 3) calc(25% / 4) at 50%;
 

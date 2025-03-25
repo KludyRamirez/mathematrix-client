@@ -14,11 +14,10 @@ import controller from "../assets/images/controller.png";
 import folder from "../assets/images/folder.png";
 import trophy from "../assets/images/trophy.png";
 import clock from "../assets/images/clock.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import StarsCanvas from "../components/StarsCanvas";
 
 import crown from "../assets/images/crown.png";
-import lock from "../assets/images/lock.png";
 import rationalfunctions from "../assets/images/rational-functions-thumbnail.jpg";
 import rationalinequalities from "../assets/images/rational-inequalities-thumbnail.jpg";
 
@@ -51,7 +50,10 @@ const lectures = [
 
 const HomePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { user } = useSelector((state) => state.auth);
+
   const [leaderboard, setLeaderboard] = useState([]);
   const [matchHistory, setMatchHistory] = useState([]);
   const [videoLink, setVideoLink] = useState(null);
@@ -59,18 +61,8 @@ const HomePage = () => {
   const [active, setActive] = useState("");
 
   useEffect(() => {
-    window.history.replaceState(null, "", window.location.pathname);
-
-    const disableBack = () => {
-        window.history.pushState(null, "", window.location.pathname);
-    };
-
-    window.addEventListener("popstate", disableBack);
-
-    return () => {
-        window.removeEventListener("popstate", disableBack);
-    };
-  }, []);
+    navigate("/", { replace: true });
+  }, [navigate]);
 
   useEffect(() => {
     if (user) {
@@ -123,7 +115,7 @@ const HomePage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
           <button
             onClick={handleClosePlayer}
-            className="absolute top-4 right-20 text-white text-4xl"
+            className="absolute top-1 right-1 xl:top-4 xl:right-20 text-white text-4xl"
           >
             &times;
           </button>
@@ -136,9 +128,9 @@ const HomePage = () => {
       <div className="spacer-small"></div>
       <div className="spacer-medium"></div>
       <div className="w-full flex items-start justify-center">
-        <div className="w-full max-w-[1336px] flex flex-col items-center justify-center">
-          <div className="w-full flex flex-wrap justify-between items-center gap-16">
-            <div className="flex justify-center items-center gap-8">
+        <div className="w-full xl:max-w-[1336px] flex flex-col items-center justify-center">
+          <div className="w-full flex flex-wrap justify-between items-center gap-16 px-4 xl:px-0">
+            <div className="flex justify-center items-center gap-4">
               <span className="text-[56px] font-bold text-6xl text-gray-900 font-[mighty] tracking-wide">
                 Mathematrix
               </span>
@@ -160,10 +152,10 @@ const HomePage = () => {
           <div className="spacer-small"></div>
           <div className="spacer-small"></div>
           <div className="spacer-medium"></div>
-          <div className="w-full flex flex-wrap justify-center items-start gap-8">
-            <Link to="/singleplayer">
-              <div className="cursor-pointer relative w-[310px] h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500">
-                <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[250px] group-hover:text-blue-600 group-hover:rotate-[40deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
+          <div className="w-full flex flex-wrap justify-center items-start gap-4 xl:gap-8 px-4 xl:px-0">
+            <Link to="/singleplayer" className="w-full md:w-[fit-content]">
+              <div className="cursor-pointer relative w-full md:w-[310px] h-[310px] md:h-[290px] bg-blue-500 rounded-3xl shadow-2xl shadow-sky-500/50 group hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] border-blue-300 transition-all duration-500 overflow-hidden xl:overflow-visible">
+                <div className="absolute -top-8 w-full left-24 xl:left-14 text-white/10 text-[250px] group-hover:text-blue-600 group-hover:rotate-[40deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
                   <BsController />
                 </div>
 
@@ -181,10 +173,10 @@ const HomePage = () => {
                 active === "Lectures"
                   ? "bg-white/20 shadow-sky-100/50 border-[1px] border-blue-300 text-blue-600"
                   : "bg-blue-500 shadow-sky-500/50"
-              } cursor-pointer relative w-[310px] h-[290px] rounded-3xl shadow-2xl group text-white hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] hover:border-blue-300 transition-all duration-500`}
+              } cursor-pointer relative w-full md:w-[310px] h-[310px] md:h-[290px] rounded-3xl shadow-2xl group text-white hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] hover:border-blue-300 transition-all duration-500 overflow-hidden xl:overflow-visible`}
               onClick={() => setActive("Lectures")}
             >
-              <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
+              <div className="absolute -top-8 w-full left-24 xl:left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
                 <BsBookmarkStar />
               </div>
 
@@ -210,10 +202,10 @@ const HomePage = () => {
                 active === "Leaderboards"
                   ? "bg-white/20 shadow-sky-100/50 border-[1px] border-blue-300 text-blue-600"
                   : "bg-blue-500 shadow-sky-500/50"
-              } cursor-pointer relative w-[310px] h-[290px] rounded-3xl shadow-2xl group text-white hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] hover:border-blue-300 transition-all duration-500`}
+              } cursor-pointer relative w-full md:w-[310px] h-[310px] md:h-[290px] rounded-3xl shadow-2xl group text-white hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] hover:border-blue-300 transition-all duration-500 overflow-hidden xl:overflow-visible`}
               onClick={() => setActive("Leaderboards")}
             >
-              <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
+              <div className="absolute -top-8 w-full left-24 xl:left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
                 <BsTrophy />
               </div>
 
@@ -239,10 +231,10 @@ const HomePage = () => {
                 active === "History"
                   ? "bg-white/20 shadow-sky-100/50 border-[1px] border-blue-300 text-blue-600"
                   : "bg-blue-500 shadow-sky-500/50"
-              } cursor-pointer relative w-[310px] h-[290px] rounded-3xl shadow-2xl group text-white hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] hover:border-blue-300 transition-all duration-500`}
+              } cursor-pointer relative w-full md:w-[310px] h-[310px] md:h-[290px] rounded-3xl shadow-2xl group text-white hover:bg-white/20 hover:shadow-sky-100/50 hover:border-[1px] hover:border-blue-300 transition-all duration-500 overflow-hidden xl:overflow-visible`}
               onClick={() => setActive("History")}
             >
-              <div className="absolute -top-8 w-full 2xl:left-20 left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
+              <div className="absolute -top-8 w-full left-24 xl:left-14 text-white/10 text-[240px] group-hover:text-blue-600 group-hover:rotate-[18deg] group-hover:-translate-x-10 transition-all duration-500 ease-in-out">
                 <BsClockHistory />
               </div>
 
@@ -270,34 +262,34 @@ const HomePage = () => {
           <div
             className={`${
               active === "Lectures" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-[#efffff]`}
+            } w-full xl:w-[1336px] flex flex-col justify-start items-start xl:border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl xl:bg-gradient-to-b from-white to-[#efffff]`}
           >
-            <div className="w-full flex justify-between items-center px-8 ">
-              <span className="text-[38px] font-[vip-regular] text-blue-600">
+            <div className="w-full flex-wrap xl:flex-nowrap flex justify-between items-center px-8 gap-4">
+              <span className="text-[33px] md:text-[38px] font-[vip-regular] text-blue-600">
                 Lectures
               </span>
-              <div className="relative">
+              <div className="w-full xl:w-[fit-content] relative">
                 <input
                   name="search"
-                  className="w-[274px] h-[48px] border-[1px] border-blue-300 px-4 focus:outline-none focus:border-[2px] focus:border-blue-500 rounded-[12px] font-[mighty] tracking-wider"
-                  placeholder="Search lectures.."
+                  className="w-full xl:w-[274px] h-[50px] border-[1px] border-blue-300 px-4 focus:outline-none focus:border-[2px] focus:border-blue-500 rounded-[10px] font-[tarrgethalf] text-blue-800 tracking-wider"
+                  placeholder="Search"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <BsFilter
-                  size={28}
-                  className="absolute top-[10px] right-3 text-blue-300"
+                  size={26}
+                  className="absolute top-[12px] right-3 text-blue-500"
                 />
               </div>
             </div>
             <div className="spacer-small"></div>
             <div className="spacer-medium"></div>
-            <div className="w-full flex justify-start items-start gap-8 px-8">
+            <div className="w-full flex flex-wrap xl:flex-nowrap justify-start items-start gap-8 px-8">
               {filteredLectures.length > 0 ? (
                 filteredLectures?.map((lecture) => (
                   <div
                     key={lecture.name}
-                    className="w-[445px] flex flex-col justify-start items-start group relative"
+                    className="w-full xl:w-[445px] flex flex-col justify-start items-start group relative"
                     onClick={() => handleVideoPlayer(lecture.link)}
                   >
                     <div
@@ -347,8 +339,8 @@ const HomePage = () => {
                 ))
               ) : (
                 <div className="w-full flex justify-center items-center">
-                  <div className="px-4 py-20 text-center text-gray-400">
-                    No lectures available.
+                  <div className="px-4 py-20 text-center text-gray-400 font-[tarrget3d]">
+                    No lectures available
                   </div>
                 </div>
               )}
@@ -364,130 +356,149 @@ const HomePage = () => {
           <div
             className={`${
               active === "Leaderboards" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
+            } w-full xl:w-[1336px] flex flex-col justify-start items-start pt-8 pb-0 xl:border-[1px] border-blue-300 rounded-3xl xl:bg-gradient-to-b from-white to-blue-300/10`}
           >
-            <div className="text-[38px] font-[vip-regular] text-blue-600 px-8">
+            <div className="text-[33px] md:text-[38px] font-[vip-regular] text-blue-600 px-8">
               Leaderboards
             </div>
             <div className="spacer-medium"></div>
-            <div className="w-full flex flex-col justify-center items-center">
-              <div className="w-full flex flex-col justify-center items-center px-8">
-                {leaderboard.slice(0, 1).map((player, index) => (
+
+            <div className="w-full flex flex-wrap flex-col justify-center items-center xl:px-8">
+              {leaderboard.slice(0, 1).map((player, index) => (
+                <div
+                  key={player._id}
+                  className="w-full flex flex-wrap items-center justify-center relative leading-none gap-4 xl:gap-8 py-14 xl:rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 w-full h-[192px]">
+                    <OtherMatrixRain />
+                  </div>
+                  <img
+                    src={crown}
+                    alt=""
+                    className="hidden xl:block w-[90px] -mt-[16px] z-20"
+                  />
+                  <span className="xl:whitespace-nowrap font-[vip-bold] text-[32px] xl:text-[64px] text-yellow-600 inline-block z-20">
+                    {index + 1}st
+                  </span>
+                  <span className="xl:whitespace-nowrap text-center font-[vip-bold] text-[32px] xl:text-[64px] text-yellow-950 inline-block z-20">
+                    {player._id}
+                  </span>
+                  <div className="flex justify-center items-center">
+                    <span className="whitespace-nowrap text-center font-[vip-bold] text-[32px] xl:text-[48px] text-blue-600 inline-block z-20">
+                      {player.totalCorrect}
+                    </span>
+                    <span className="text-[32px] text-yellow-950 font-[vip-bold] z-20">
+                      -
+                    </span>
+                    <span className="whitespace-nowrap text-center font-[vip-bold] text-[32px] xl:text-[48px] text-red-600 inline-block z-20">
+                      {player.totalIncorrect}
+                    </span>
+                  </div>
+                  <span className="xl:whitespace-nowrap font-[vip-bold] text-[32px] xl:text-[64px] text-blue-950 inline-block z-20">
+                    {player.elo}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="w-full flex flex-wrap xl:flex-nowrap justify-center items-center gap-8 xl:gap-2 py-8 xl:py-16">
+              {leaderboard.slice(1, 3).map((player, index) => {
+                const rank = index === 0 ? "2nd" : "3rd";
+                const rankColor =
+                  index === 0 ? "text-gray-500" : "text-yellow-800";
+
+                return (
                   <div
                     key={player._id}
-                    className="w-full flex items-center justify-center relative leading-none gap-8 py-14 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
+                    className="w-[50%] flex items-center justify-center relative leading-none gap-6"
                   >
-                    <div className="absolute top-0 left-0 w-full h-[192px]">
-                      <OtherMatrixRain/>
-                    </div>
-                    <img
-                      src={crown}
-                      alt=""
-                      className="w-[90px] -mt-[16px] z-20"
-                    />
-                    <span className="whitespace-nowrap font-[vip-bold] text-[72px] text-yellow-600 inline-block z-20">
-                      {index + 1}st
+                    <span
+                      className={`whitespace-nowrap font-[mighty] text-[32px] xl:text-[48px] ${rankColor} inline-block`}
+                    >
+                      {rank}
                     </span>
-                    <span className="whitespace-nowrap text-center font-[vip-bold] text-[72px] text-yellow-950 pt-2 inline-block z-20">
+                    <span className="whitespace-nowrap text-center font-[mighty] text-[32px] xl:text-[48px] text-yellow-950 inline-block">
                       {player._id}
                     </span>
-                    <span className="whitespace-nowrap font-[vip-bold] text-[72px] text-blue-950 inline-block z-20">
+                    <div className="flex justify-center items-center">
+                      <span className="whitespace-nowrap text-center font-[mighty] text-[32px] xl:text-[48px] text-blue-600 inline-block">
+                        {player.totalCorrect}
+                      </span>
+                      <span className="text-[32px] text-yellow-950 font-[mighty]">
+                        -
+                      </span>
+                      <span className="whitespace-nowrap text-center font-[mighty] text-[32px] xl:text-[48px] text-red-600 inline-block">
+                        {player.totalIncorrect}
+                      </span>
+                    </div>
+                    <span className="whitespace-nowrap font-[mighty] text-[32px] xl:text-[48px] text-blue-950 inline-block">
                       {player.elo}
                     </span>
                   </div>
-                ))}
-              </div>
-
-              <div className="w-full flex justify-center items-center gap-2 py-16">
-                {leaderboard.slice(1, 3).map((player, index) => {
-                  const rank = index === 0 ? "2nd" : "3rd";
-                  const rankColor =
-                    index === 0 ? "text-gray-500" : "text-yellow-800";
-
-                  return (
-                    <div
-                      key={player._id}
-                      className="w-[50%] flex items-center justify-center relative leading-none gap-6"
-                    >
-                      <span
-                        className={`whitespace-nowrap font-[mighty] text-[48px] ${rankColor} inline-block`}
-                      >
-                        {rank}
-                      </span>
-                      <span className="whitespace-nowrap text-center font-[mighty] text-[24px] text-yellow-950 pt-2 inline-block">
-                        {player._id}
-                      </span>
-                      <span className="whitespace-nowrap font-[mighty] text-[48px] text-blue-950 inline-block">
-                        {player.elo}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="w-full px-8">
-                <div className="w-full flex flex-col justify-start items-start border-t-[1px] border-l-[1px] border-r-[1px] border-blue-200 rounded-tl-3xl rounded-tr-3xl overflow-auto shadow-xl">
-                  <table className="w-full text-center">
-                    <thead>
-                      <tr className="font-[semi-bold] text-[20px]">
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                          Rank
-                        </th>
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                          Player
-                        </th>
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-blue-700">
-                          Correct
-                        </th>
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-red-700">
-                          Wrong
-                        </th>
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                          Rating
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {leaderboard.length > 3 ? (
-                        leaderboard.slice(3).map((player, index) => (
-                          <tr
-                            key={player._id}
-                            className={`text-[20px] ${
-                              index % 2 === 0
-                                ? "bg-[#efffff]"
-                                : "bg-transparent"
-                            }`}
-                          >
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                              {index + 4}{" "}
-                              {/* Adjusting index to match actual rank */}
-                            </td>
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                              {player._id}
-                            </td>
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-blue-700">
-                              {player.totalCorrect}
-                            </td>
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-red-700">
-                              {player.totalIncorrect}
-                            </td>
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
-                              {player.elo}
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td
-                            colSpan="5"
-                            className="px-4 py-20 text-center text-gray-400"
-                          >
-                            No leaderboard data available.
+                );
+              })}
+            </div>
+            <div className="w-full px-0 xl:px-8">
+              <div className="w-full h-[624px] flex flex-col justify-start items-start border-t-[1px] xl:border-l-[1px] border-r-[1px] border-blue-200 xl:rounded-tl-3xl xl:rounded-tr-3xl overflow-auto shadow-xl">
+                <table className="w-full text-center">
+                  <thead>
+                    <tr className="text-[16px] xl:text-[20px]">
+                      <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                        Rank
+                      </th>
+                      <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                        Player
+                      </th>
+                      <th className="w-[20%] py-6 font-[mighty] tracking-wider text-blue-700">
+                        Correct
+                      </th>
+                      <th className="w-[20%] py-6 font-[mighty] tracking-wider text-red-700">
+                        Wrong
+                      </th>
+                      <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                        Rating
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leaderboard.length > 3 ? (
+                      leaderboard.slice(3).map((player, index) => (
+                        <tr
+                          key={player._id}
+                          className={`text-[16px] xl:text-[20px] ${
+                            index % 2 === 0 ? "bg-[#efffff]" : "bg-transparent"
+                          }`}
+                        >
+                          <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                            {index + 4}{" "}
+                            {/* Adjusting index to match actual rank */}
+                          </td>
+                          <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                            {player._id}
+                          </td>
+                          <td className="w-[20%] py-6 font-[mighty] tracking-wider text-blue-700">
+                            {player.totalCorrect}
+                          </td>
+                          <td className="w-[20%] py-6 font-[mighty] tracking-wider text-red-700">
+                            {player.totalIncorrect}
+                          </td>
+                          <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                            {player.elo}
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="5"
+                          className="px-4 py-20 text-center text-gray-400"
+                        >
+                          No leaderboard data available.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -496,50 +507,49 @@ const HomePage = () => {
           <div
             className={`${
               active === "History" ? "block" : "hidden"
-            } w-[1336px] flex flex-col justify-start items-start border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
+            } w-full xl:w-[1336px] flex flex-col justify-start items-start xl:border-[1px] border-blue-300 pt-8 pb-0 rounded-3xl bg-gradient-to-b from-white to-blue-300/10`}
           >
-            <div className="text-[38px] font-[vip-regular] text-blue-600 px-8">
+            <div className="text-[33px] md:text-[38px] font-[vip-regular] text-blue-600 px-8">
               History
             </div>
             <div className="spacer-medium"></div>
-            <div className="w-full flex flex-col justify-center items-center">
-              <div className="w-full flex flex-col justify-center items-center">
-                <div className="w-full flex flex-col justify-center items-center px-8">
-                  {matchHistory.slice(0, 1).map((match, index) => (
-                    <div
-                      key={index}
-                      className="w-full flex items-center justify-center relative leading-none gap-8 py-14 bg-blue-100/30 rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
-                    >
-                      <div className="absolute top-0 left-0 w-full h-[192px]">
-                        <OtherMatrixRain/>
-                      </div>
-                      <span className="whitespace-nowrap font-[vip-bold] text-[56px] text-yellow-600 inline-block z-20">
-                        {new Date(match.date).toLocaleDateString()}
-                      </span>
-                      <span className="whitespace-nowrap text-center font-[vip-bold] text-[56px] text-blue-600 pt-2 inline-block z-20">
-                        {match.mode}
-                      </span>
-                      <span className="whitespace-nowrap font-[vip-bold] text-[56px] text-blue-950 inline-block z-20">
-                        {match.result}
-                      </span>
+            <div className="w-full flex flex-wrap flex-col justify-center items-center">
+              <div className="w-full flex flex-wrap flex-col justify-center items-center px-0 xl:px-8">
+                {matchHistory.slice(0, 1).map((match, index) => (
+                  <div
+                    key={index}
+                    className="w-full flex flex-wrap items-center justify-center relative leading-none gap-2 xl:gap-8 py-14 bg-blue-100/30 xl:rounded-3xl shadow-md shadow-gray-300/10 border-[1px] border-blue-200 overflow-hidden"
+                  >
+                    <div className="absolute top-0 left-0 w-full h-[192px]">
+                      <OtherMatrixRain />
                     </div>
-                  ))}
-                </div>
+                    <span className="whitespace-nowrap font-[vip-bold] text-[24px] xl:text-[56px] text-yellow-600 inline-block z-20">
+                      {new Date(match.date).toLocaleDateString()}
+                    </span>
+                    <span className="whitespace-nowrap text-center font-[vip-bold] text-[24px] xl:text-[56px] text-yellow-950 inline-block z-20">
+                      {match.mode}
+                    </span>
+                    <span className="whitespace-nowrap font-[vip-bold] text-[24px] xl:text-[56px] text-blue-950 inline-block z-20">
+                      {match.result}
+                    </span>
+                  </div>
+                ))}
               </div>
+
               <div className="spacer-xs"></div>
               <div className="spacer-small"></div>
-              <div className="w-full px-8">
-                <div className="w-full h-[390px] flex flex-col justify-start items-start border-t-[1px] border-l-[1px] border-r-[1px] border-blue-200 rounded-tl-3xl rounded-tr-3xl overflow-auto shadow-xl">
+              <div className="w-full px-0 xl:px-8">
+                <div className="w-full h-[624px] flex flex-col justify-start items-start border-t-[1px] xl:border-l-[1px] border-r-[1px] border-blue-200 xl:rounded-tl-3xl xl:rounded-tr-3xl overflow-auto shadow-xl">
                   <table className="w-full text-center">
                     <thead>
-                      <tr className="font-[semi-bold] text-[20px]">
+                      <tr className="text-[16px] xl:text-[20px]">
                         <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
                           Date
                         </th>
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-blue-600">
                           Time
                         </th>
-                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                        <th className="w-[20%] py-6 font-[mighty] tracking-wider text-red-600">
                           Mode
                         </th>
                         <th className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
@@ -552,7 +562,7 @@ const HomePage = () => {
                         matchHistory.map((match, index) => (
                           <tr
                             key={index}
-                            className={`text-[20px] ${
+                            className={`text-[16px] xl:text-[20px] ${
                               index % 2 === 0
                                 ? "bg-[#efffff]"
                                 : "bg-transparent"
@@ -561,13 +571,13 @@ const HomePage = () => {
                             <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
                               {new Date(match.date).toLocaleDateString()}
                             </td>
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-blue-600">
                               {new Date(match.date).toLocaleTimeString(
                                 "en-US",
                                 { hour: "2-digit", minute: "2-digit" }
                               )}
                             </td>
-                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-yellow-950">
+                            <td className="w-[20%] py-6 font-[mighty] tracking-wider text-red-600">
                               {match.mode}
                             </td>
                             <td
@@ -599,8 +609,8 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="spacer-medium"></div>
-          <div className="spacer-medium"></div>
+          <div className="spacer-medium hidden xl:block"></div>
+          <div className="spacer-medium hidden xl:block"></div>
         </div>
       </div>
     </>

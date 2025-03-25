@@ -13,6 +13,8 @@ import SinglePlayerGame from "./components/SinglePlayerGame";
 import MultiPlayerGame from "./components/MultiPlayerGame";
 
 import io from "socket.io-client";
+import ForgotPage from "./pages/ForgotPage";
+import ResetPage from "./pages/ResetPage";
 
 const App = () => {
   const socket = io(process.env.REACT_APP_SOCKET_API);
@@ -63,6 +65,18 @@ const App = () => {
             }
           />
           <Route
+            path="/forgot"
+            element={
+              <PrivateRoute restricted>
+                <ForgotPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/reset-password/:id/:token"
+            element={<ResetPage />}
+          ></Route>
+          <Route
             path="/"
             element={
               <PrivateRoute>
@@ -79,14 +93,14 @@ const App = () => {
             }
           />
 
-          <Route
+          {/* <Route
             path="/matchmaking"
             element={<Matchmaking socket={socket} />}
           />
           <Route
             path="/multiplayer/:matchId"
             element={<MultiPlayerGame socket={socket} />}
-          />
+          /> */}
           <Route
             path="/singleplayer"
             element={

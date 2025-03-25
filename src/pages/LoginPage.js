@@ -152,6 +152,13 @@ const LoginPage = () => {
             <div className="spacer-medium"></div>
             <div className="spacer-small"></div>
             <div
+              className="cursor-pointer text-red-600 hover:underline"
+              onClick={() => navigate("/forgot")}
+            >
+              Forgot Password?
+            </div>
+            <div className="spacer-small"></div>
+            <div
               className="cursor-pointer text-[#282828] hover:underline"
               onClick={() => navigate("/register")}
             >
