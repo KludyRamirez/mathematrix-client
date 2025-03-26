@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
-import logo from "../assets/images/logo.png";
 import { BsEnvelopeAt } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Loading from "./Loading";
 
 const ForgotPage = () => {
   const [status, setStatus] = useState(null);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [countdown, setCountdown] = useState(3);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmitEmail = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_BACKEND_HOST}/auth/forgot`,
@@ -23,10 +26,7 @@ const ForgotPage = () => {
         setStatus("success");
         toast.success(res.data.message);
 
-        let timer;
-        let countdownInterval;
-
-        countdownInterval = setInterval(() => {
+        let countdownInterval = setInterval(() => {
           setCountdown((prevCountdown) => {
             if (prevCountdown <= 1) {
               clearInterval(countdownInterval);
@@ -36,21 +36,18 @@ const ForgotPage = () => {
           });
         }, 1000);
 
-        timer = setTimeout(() => {
+        setTimeout(() => {
           navigate("/");
         }, 10000);
       }
     } catch (error) {
-      if (error?.response?.status === 404) {
-        setStatus("error");
-        toast.error(error?.response?.data.message);
-      } else {
-        toast.error(
-          error?.response?.data.message ||
-            "Something went wrong. Please try again"
-        );
-      }
+      setStatus("error");
+      toast.error(
+        error?.response?.data.message ||
+          "Something went wrong. Please try again"
+      );
     }
+    setLoading(false);
   };
 
   const validateEmail = (value) => {
@@ -68,6 +65,8 @@ const ForgotPage = () => {
     setEmail(value);
     validateEmail(value);
   };
+
+  if (loading) return <Loading />;
 
   return (
     <div className="w-[100%] h-[fit-content] xl:h-screen bg-white">
@@ -102,6 +101,7 @@ const ForgotPage = () => {
           <button
             className="mt-3 p-3 border-[1px] border-[#006bff] rounded-[48px] w-[100%] bg-[#006bff] text-white"
             onClick={handleSubmitEmail}
+            disabled={loading}
           >
             Submit
           </button>
@@ -135,9 +135,6 @@ const ForgotPage = () => {
             )}
           </div>
         </div>
-        {/* <div className="w-[100%]">
-          <LoginFooter />
-        </div> */}
         <div className="absolute flex justify-center items-center w-[800px] h-[800px] rounded-[50%] border-[2px] border-[#f9f9f9] top-[-160px] right-[200px] z-10 transform rotate-[45deg]">
           <div className="flex justify-center items-center w-[760px] h-[760px] rounded-[50%] border-[2px] border-[#f9f9f9] top-[-200px] left-[-400px] z-10">
             <div className="flex justify-center items-center w-[720px] h-[720px] rounded-[50%] border-[2px] border-[#f9f9f9] top-[-200px] left-[-400px] z-10">
