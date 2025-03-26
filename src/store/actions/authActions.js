@@ -15,9 +15,9 @@ export const register =
     } catch (error) {
       dispatch({
         type: "REGISTER_FAIL",
-        payload: error.response?.data?.message || error.message,
+        payload: error?.response?.data?.message || error.message,
       });
-      toast.error(error.response?.data.message || error.message);
+      toast.error(error?.response?.data?.message || error.message);
     }
   };
 
@@ -30,7 +30,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "FETCH_USER_FAIL",
-      payload: error.response?.data?.message || error.message,
+      payload: error?.response?.data?.message || error.message,
     });
   }
 };
@@ -43,9 +43,9 @@ export const login = (username, password) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "LOGIN_FAIL",
-      payload: error.response?.data.message || error.message,
+      payload: error?.response?.data?.message || error.message,
     });
-    toast.error(error.response?.data.message || error.message);
+    toast.error(error?.response?.data?.message || error.message);
   }
 };
 
@@ -55,6 +55,6 @@ export const logout = () => async (dispatch) => {
     dispatch({ type: "LOGOUT" });
     toast.success("You have been successfully logged out!");
   } catch (error) {
-    toast.success(error.response?.data.message || error.message);
+    toast.success(error?.response?.data?.message || error.message);
   }
 };

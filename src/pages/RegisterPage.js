@@ -99,7 +99,7 @@ const RegisterPage = () => {
 
           <div className="w-full flex flex-col justify-start items-center">
             <span className="text-[48px] text-[#282828] font-[extra-light-italic]">
-              Join now, micros
+              Join now
               <span className="font-[extra-light]"> */</span>
             </span>
             <div className="spacer-small"></div>
