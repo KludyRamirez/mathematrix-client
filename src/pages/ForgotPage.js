@@ -3,7 +3,7 @@ import axios from "axios";
 import { BsEnvelopeAt } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import Loading from "./Loading";
+import Loading from "../components/Loading";
 
 const ForgotPage = () => {
   const [status, setStatus] = useState(null);
