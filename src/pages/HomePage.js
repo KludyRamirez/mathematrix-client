@@ -339,7 +339,7 @@ const HomePage = () => {
                 ))
               ) : (
                 <div className="w-full flex justify-center items-center">
-                  <div className="px-4 py-20 text-center text-gray-400 font-[tarrget3d]">
+                  <div className="px-4 py-20 text-center text-[18px] text-red-500 font-[tarrget3d]">
                     No lectures available
                   </div>
                 </div>
@@ -488,14 +488,11 @@ const HomePage = () => {
                         </tr>
                       ))
                     ) : (
-                      <tr>
-                        <td
-                          colSpan="5"
-                          className="px-4 py-20 text-center text-gray-400"
-                        >
-                          No leaderboard data available.
-                        </td>
-                      </tr>
+                      <div className="w-full flex justify-center items-center">
+                        <div className="px-4 py-20 text-center text-[18px] text-red-500 font-[tarrget3d]">
+                          No leaderboard data available
+                        </div>
+                      </div>
                     )}
                   </tbody>
                 </table>
@@ -594,14 +591,11 @@ const HomePage = () => {
                           </tr>
                         ))
                       ) : (
-                        <tr>
-                          <td
-                            colSpan="3"
-                            className="p-4 text-center text-gray-500 text-[18px]"
-                          >
-                            No match history found.
-                          </td>
-                        </tr>
+                        <div className="w-full flex justify-center items-center">
+                          <div className="px-4 py-20 text-center text-[18px] text-red-500 font-[tarrget3d]">
+                            No match history found
+                          </div>
+                        </div>
                       )}
                     </tbody>
                   </table>
