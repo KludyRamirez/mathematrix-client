@@ -15,8 +15,9 @@ export const register =
     } catch (error) {
       dispatch({
         type: "REGISTER_FAIL",
-        payload: error.response?.data.message || error.message,
+        payload: error.response?.data?.message || error.message,
       });
+      toast.error(error.response?.data.message || error.message);
     }
   };
 
@@ -29,7 +30,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "FETCH_USER_FAIL",
-      payload: error.response?.data.message || error.message,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };
